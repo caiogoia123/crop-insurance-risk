@@ -1,7 +1,7 @@
 # data never goes to git (LGPD: policy-level records)
-data/
-models/
-mlruns/
+/data/
+/models/
+/mlruns/
 mlflow.db
 *.parquet
 *.csv
