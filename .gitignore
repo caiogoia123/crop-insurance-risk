@@ -1,0 +1,22 @@
+# data never goes to git (LGPD: policy-level records)
+data/
+models/
+mlruns/
+mlflow.db
+*.parquet
+*.csv
+!tests/fixtures/*.csv
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# local only
+PROMPT.md
+.env
