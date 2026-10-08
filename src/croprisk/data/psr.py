@@ -109,9 +109,7 @@ def _norm(name: str) -> str:
 
 def list_resources() -> list[dict]:
     """CSV resources of the sisser3 package, with server metadata."""
-    r = requests.get(
-        config.CKAN_PACKAGE_URL, headers={"User-Agent": config.USER_AGENT}, timeout=60
-    )
+    r = requests.get(config.CKAN_PACKAGE_URL, headers={"User-Agent": config.USER_AGENT}, timeout=60)
     r.raise_for_status()
     res = r.json()["result"]["resources"]
     return [
@@ -168,9 +166,7 @@ def parse_chunk(chunk: pd.DataFrame, source: str) -> pd.DataFrame:
         out[c] = d.astype("datetime64[ns]")
     for c in FLOAT_COLS:
         s = chunk[c].astype("string").str.strip().str.replace(",", ".", regex=False)
-        out[c] = pd.to_numeric(s.where(~s.isin(["-", ""]), None), errors="coerce").astype(
-            "float64"
-        )
+        out[c] = pd.to_numeric(s.where(~s.isin(["-", ""]), None), errors="coerce").astype("float64")
     for c in INT_COLS:
         out[c] = pd.to_numeric(chunk[c], errors="coerce").astype("Int64")
     out["source_file"] = source
