@@ -1,0 +1,121 @@
+{
+  "steps": [
+    {
+      "step": "raw rows (3 files)",
+      "removed": 0,
+      "remaining": 1712385
+    },
+    {
+      "step": "duplicated proposal id",
+      "removed": 1,
+      "remaining": 1712384
+    },
+    {
+      "step": "out-of-scope crop (livestock, forest, pasture)",
+      "removed": 29607,
+      "remaining": 1682777
+    },
+    {
+      "step": "out-of-scope product class (livestock, forest, revenue, parametric)",
+      "removed": 411,
+      "remaining": 1682366
+    },
+    {
+      "step": "crop without calendar",
+      "removed": 0,
+      "remaining": 1682366
+    },
+    {
+      "step": "missing municipality code or start date",
+      "removed": 1311,
+      "remaining": 1681055
+    },
+    {
+      "step": "invalid money values (sum insured, premium or rate <= 0, rate >= 1)",
+      "removed": 164,
+      "remaining": 1680891
+    },
+    {
+      "step": "rate inconsistent with premium / sum insured (>25% apart)",
+      "removed": 0,
+      "remaining": 1680891
+    },
+    {
+      "step": "zero area / coverage / yield set to missing (row kept)",
+      "removed": 0,
+      "remaining": 1680891
+    },
+    {
+      "step": "coverage shorter than 30 days or longer than 2 years (2016+)",
+      "removed": 166,
+      "remaining": 1680725
+    },
+    {
+      "step": "Too Seguros 2020+ (file truncated inside this insurer's block)",
+      "removed": 9106,
+      "remaining": 1671619
+    },
+    {
+      "step": "claims cutoff estimated at 2025-03-16",
+      "removed": 0,
+      "remaining": 1671619
+    },
+    {
+      "step": "safra not fully matured (censored)",
+      "removed": 139160,
+      "remaining": 1532459
+    },
+    {
+      "step": "policy not matured inside a kept safra",
+      "removed": 0,
+      "remaining": 1532459
+    }
+  ],
+  "claims_cutoff": "2025-03-16",
+  "maturity_lag_days": 90,
+  "matured_share_by_safra": {
+    "2006": 1.0,
+    "2007": 1.0,
+    "2008": 1.0,
+    "2009": 1.0,
+    "2010": 1.0,
+    "2011": 1.0,
+    "2012": 1.0,
+    "2013": 1.0,
+    "2014": 1.0,
+    "2015": 1.0,
+    "2016": 1.0,
+    "2017": 1.0,
+    "2018": 1.0,
+    "2019": 1.0,
+    "2020": 1.0,
+    "2021": 1.0,
+    "2022": 1.0,
+    "2023": 1.0,
+    "2024": 0.0029,
+    "2025": 0.0,
+    "2028": 0.0
+  },
+  "safras_kept": [
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "rows": 1532459,
+  "claim_rate": 0.1666
+}
