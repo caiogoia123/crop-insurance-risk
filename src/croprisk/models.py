@@ -193,6 +193,10 @@ class LGBModel:
             X[self.fs.columns], num_iteration=self.booster.best_iteration or None
         )
 
+    def contributions(self, X: pd.DataFrame) -> np.ndarray:
+        """TreeSHAP values per feature (log-odds), shape (n, n_features)."""
+        return self.booster.predict(X[self.fs.columns], pred_contrib=True)[:, :-1]
+
 
 class LogRegModel:
     def __init__(self, fs: FeatureSet, C: float = 1.0):
@@ -237,11 +241,44 @@ class LogRegModel:
         return X
 
     def fit(self, X: pd.DataFrame, y: np.ndarray):
-        self.pipe.fit(self._cat_as_str(X[self.fs.columns], self.fs.cat), y)
+        Xs = self._cat_as_str(X[self.fs.columns], self.fs.cat)
+        self.pipe.fit(Xs, y)
+        # mean of each transformed column, the reference point for contributions
+        sample = Xs.sample(min(len(Xs), 200_000), random_state=config.SEED)
+        z = self.pipe.named_steps["pre"].transform(sample)
+        self.z_mean = np.asarray(z.mean(axis=0)).ravel()
+        self.col_owner = self._owners()
         return self
 
     def predict(self, X: pd.DataFrame) -> np.ndarray:
         return self.pipe.predict_proba(self._cat_as_str(X[self.fs.columns], self.fs.cat))[:, 1]
+
+    def _owners(self) -> list[int]:
+        """Index of the original feature behind each transformed column."""
+        names = self.pipe.named_steps["pre"].get_feature_names_out()
+        cats = sorted(self.fs.cat, key=len, reverse=True)  # "crop_group" before "crop"
+        cols = self.fs.columns
+        owners = []
+        for n in names:
+            block, rest = n.split("__", 1)
+            if block == "num":
+                owners.append(cols.index(rest.removeprefix("missingindicator_")))
+            else:
+                owners.append(cols.index(next(c for c in cats if rest.startswith(c + "_"))))
+        return owners
+
+    def contributions(self, X: pd.DataFrame) -> np.ndarray:
+        """Exact SHAP values of a linear model in log-odds: coef * (z - mean z),
+        summed back to the original features (one-hot columns, missing flags)."""
+        z = self.pipe.named_steps["pre"].transform(
+            self._cat_as_str(X[self.fs.columns], self.fs.cat)
+        )
+        z = z.toarray() if hasattr(z, "toarray") else np.asarray(z)
+        c = (z - self.z_mean) * self.pipe.named_steps["lr"].coef_[0]
+        out = np.zeros((len(X), len(self.fs.columns)))
+        for j, o in enumerate(self.col_owner):
+            out[:, o] += c[:, j]
+        return out
 
 
 class RateModel:

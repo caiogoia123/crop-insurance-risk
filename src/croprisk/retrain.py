@@ -51,10 +51,9 @@ def refresh_data() -> dict:
     return out
 
 
-def score_champion(champion: Bundle, hold: pd.DataFrame) -> dict:
-    X = hold[champion.meta["features"]]
-    p = champion.booster.predict(X)
-    return metrics.binary_metrics(hold["y"], p)
+def score_champion(champion: Bundle, hold: pd.DataFrame) -> tuple[dict, pd.Series]:
+    p = champion.model.predict(hold[champion.meta["features"]])
+    return metrics.binary_metrics(hold["y"], p), p
 
 
 def cleanup_bundles(models_dir, keep: int = KEEP_BUNDLES) -> None:
@@ -86,8 +85,8 @@ def run() -> int:
         return finish(record, 0)
 
     os.environ.setdefault("CROPRISK_TUNING", json.dumps(champion.meta["tuning"]))
-    res = fit_and_evaluate(df, holdout)
-    champ_met = score_champion(champion, df[df["safra_year"] == holdout])
+    res = fit_and_evaluate(df, holdout, algo=champion.meta.get("algo", "lgbm"))
+    champ_met, p_champ = score_champion(champion, df[df["safra_year"] == holdout])
     chall_met = res["metrics"]
     record["champion"]["holdout"] = champ_met
     record["challenger"] = {
@@ -98,7 +97,7 @@ def run() -> int:
         chall_met["auc"] >= champ_met["auc"] - AUC_TOL
         and chall_met["brier"] <= champ_met["brier"] + BRIER_TOL
     )
-    same = res["model"].booster.model_to_string() == champion.booster.model_to_string()
+    same = bool(abs(res["p_hold"] - p_champ).max() < 1e-9)
     if same:
         record["decision"] = "keep: challenger identical to champion"
         return finish(record, 0)

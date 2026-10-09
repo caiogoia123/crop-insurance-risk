@@ -18,8 +18,7 @@ ONI_TEXT = "\n".join(
 )
 
 
-@pytest.fixture(scope="session")
-def bundle_dir(tmp_path_factory):
+def _bundle(tmp_path_factory, algo: str):
     rng = np.random.default_rng(0)
     fs = models.FEATURE_SETS["pre_season"]
     n = 3000
@@ -37,14 +36,17 @@ def bundle_dir(tmp_path_factory):
     df["y"] = (rng.random(n) < 0.2).astype(int)
     df["safra_year"] = rng.choice([2020, 2021, 2022], n)
     df["rate"] = rng.uniform(0.03, 0.15, n)
-    model = models.LGBModel(fs, params={"min_child_samples": 20}, rounds=10).fit(
-        df, df["y"].to_numpy()
-    )
+    if algo == "lgbm":
+        model = models.LGBModel(fs, params={"min_child_samples": 20}, rounds=10)
+    else:
+        model = models.LogRegModel(fs)
+    model.fit(df, df["y"].to_numpy())
     p = model.predict(df)
     res = {
         "model": model,
         "rate_model": models.RateModel().fit(df, df["y"].to_numpy()),
-        "fs": fs,
+        "fs": model.fs,
+        "algo": algo,
         "tuning": {"params": {}, "rounds": 10},
         "train": df,
         "hold": df,
@@ -109,7 +111,7 @@ def bundle_dir(tmp_path_factory):
         ),
         "oni": enso.load(ONI_TEXT),
     }
-    root = tmp_path_factory.mktemp("models")
+    root = tmp_path_factory.mktemp(f"models_{algo}")
     out = train.write_bundle(
         res,
         tables,
@@ -119,3 +121,14 @@ def bundle_dir(tmp_path_factory):
     )
     train.promote(out)
     return root
+
+
+@pytest.fixture(scope="session")
+def bundle_dir(tmp_path_factory):
+    """Bundle with the served algorithm (logistic regression)."""
+    return _bundle(tmp_path_factory, "logreg")
+
+
+@pytest.fixture(scope="session")
+def bundle_dir_lgbm(tmp_path_factory):
+    return _bundle(tmp_path_factory, "lgbm")

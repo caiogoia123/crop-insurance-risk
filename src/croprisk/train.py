@@ -18,6 +18,7 @@ import os
 from datetime import UTC, datetime
 from pathlib import Path
 
+import joblib
 import numpy as np
 import pandas as pd
 
@@ -29,7 +30,11 @@ from croprisk.features.build import RARE_CROP
 
 log = logging.getLogger(__name__)
 
+# Served model, chosen on the walk-forward backtest (DECISIONS D20): the logistic
+# regression had the best mean AUC of the pre-season candidates and by far the most
+# stable ranking (worst safra 0.56 vs 0.39 for LightGBM).
 FEATURE_SET = "pre_season"
+ALGO = "logreg"
 DEFAULT_TUNING = {"params": {"num_leaves": 31, "min_child_samples": 500}, "rounds": 100}
 
 
@@ -64,14 +69,18 @@ def feature_psi(train: pd.DataFrame, hold: pd.DataFrame, cols: list[str]) -> dic
     return dict(sorted(out.items(), key=lambda kv: -kv[1]))
 
 
-def fit_and_evaluate(df: pd.DataFrame, holdout: int, fs_name: str = FEATURE_SET) -> dict:
+def fit_and_evaluate(
+    df: pd.DataFrame, holdout: int, fs_name: str = FEATURE_SET, algo: str = ALGO
+) -> dict:
     fs = models.FEATURE_SETS[fs_name]
-    tun = tuning_for(fs_name)
+    tun = tuning_for(fs_name) if algo == "lgbm" else {"params": {"C": 1.0}, "rounds": None}
     train = df[df["safra_year"] <= holdout - 1]
     hold = df[df["safra_year"] == holdout]
-    model = models.LGBModel(fs, params=tun["params"], rounds=tun["rounds"]).fit(
-        train, train["y"].to_numpy()
-    )
+    if algo == "lgbm":
+        model = models.LGBModel(fs, params=tun["params"], rounds=tun["rounds"])
+    else:
+        model = models.LogRegModel(fs)
+    model.fit(train, train["y"].to_numpy())
     p_hold = model.predict(hold)
     p_train = model.predict(train.sample(min(len(train), 200_000), random_state=config.SEED))
     met = metrics.binary_metrics(hold["y"], p_hold, base_rate=float(train["y"].mean()))
@@ -81,7 +90,8 @@ def fit_and_evaluate(df: pd.DataFrame, holdout: int, fs_name: str = FEATURE_SET)
     return {
         "model": model,
         "rate_model": rate,
-        "fs": fs,
+        "fs": model.fs,
+        "algo": algo,
         "tuning": tun,
         "train": train,
         "hold": hold,
@@ -121,11 +131,20 @@ def write_bundle(
     model = res["model"]
     train = res["train"]
     created = datetime.now(UTC)
-    digest = hashlib.sha1(model.booster.model_to_string().encode()).hexdigest()[:8]
+    algo = res.get("algo", "lgbm")
+    if algo == "lgbm":
+        blob = model.booster.model_to_string().encode()
+    else:
+        lr = model.pipe.named_steps["lr"]
+        blob = lr.coef_.tobytes() + lr.intercept_.tobytes()
+    digest = hashlib.sha1(blob).hexdigest()[:8]
     version = f"{created:%Y%m%d}-{digest}"
     out = out_root / version
     (out / "tables").mkdir(parents=True, exist_ok=True)
-    model.booster.save_model(str(out / "model.txt"))
+    if algo == "lgbm":
+        model.booster.save_model(str(out / "model.txt"))
+    else:
+        joblib.dump(model, out / "model.joblib")
     lr = res["rate_model"].lr
     (out / "rate_calib.json").write_text(
         json.dumps({"intercept": float(lr.intercept_[0]), "coef": float(lr.coef_[0][0])})
@@ -148,7 +167,9 @@ def write_bundle(
     meta = {
         "version": version,
         "created_at": created.isoformat(timespec="seconds"),
-        "model": "LightGBM, pre-season (contract + history + climatology + ENSO)",
+        "algo": algo,
+        "model": ("Logistic regression" if algo == "logreg" else "LightGBM")
+        + ", pre-season (contract + history + climatology + ENSO)",
         "feature_set": fs.name,
         "features": fs.columns,
         "cat_features": fs.cat,
