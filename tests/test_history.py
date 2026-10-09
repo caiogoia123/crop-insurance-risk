@@ -68,3 +68,28 @@ def test_lookup_tables_match_training_math():
     f = pd.concat([nxt.reset_index(drop=True), f.reset_index(drop=True)], axis=1)
     m = f.merge(tabs["hist_muni"], on=["ibge_code", "crop_group"], suffixes=("", "_tab"))
     assert np.allclose(m["hist_muni_cg_rate"], m["hist_muni_cg_rate_tab"])
+
+
+def test_reference_uses_only_previous_safras():
+    from croprisk.features import reference
+
+    rows = []
+    for s in range(2015, 2021):
+        for v in (1.0, 2.0, 3.0):
+            rows.append(
+                {
+                    "uf": "PR",
+                    "crop": "Soja",
+                    "safra_year": s,
+                    "sum_insured": 1000.0 * (s - 2014) * v,
+                    "area_ha": 1.0,
+                    "yield_expected": 3000.0 + s,
+                }
+            )
+    df = pd.DataFrame(rows)
+    med = reference.reference_medians(df)
+    keys = pd.DataFrame({"uf": ["PR", "MT"], "crop": ["Soja", "Soja"], "safra_year": [2020, 2020]})
+    ref = reference.reference_for(med, keys)
+    # safras 2017-2019 have medians 6000, 8000, 10000 -> 8000; MT falls back to national
+    assert ref["siha_ref"].tolist() == [8000.0, 8000.0]
+    assert ref["yld_ref"].iloc[0] == 3000 + 2018

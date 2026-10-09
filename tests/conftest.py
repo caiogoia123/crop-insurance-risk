@@ -97,7 +97,16 @@ def bundle_dir(tmp_path_factory):
         ),
         "hist_cg": pd.DataFrame({"crop_group": list(calendar.CALENDAR), "hist_cg_rate": 0.15}),
         "hist_muni_all": pd.DataFrame({"ibge_code": [4104808], "hist_muni_rate": [0.15]}),
-        "yield": pd.DataFrame({"uf": ["PR"], "crop": ["Soja"], "yld_med": [3500.0]}),
+        "reference": pd.DataFrame(
+            {
+                "uf": ["PR", "*", "*"],
+                "crop": ["Soja", "Soja", "Tomate"],
+                "safra_year": [2024, 2024, 2024],
+                "yld_med": [3500.0, 3400.0, 60000.0],
+                "siha_med": [5000.0, 4800.0, 30000.0],
+                "n": [100, 300, 50],
+            }
+        ),
         "oni": enso.load(ONI_TEXT),
     }
     root = tmp_path_factory.mktemp("models")

@@ -17,11 +17,9 @@ from croprisk import config
 
 CAT = ["crop", "crop_group", "uf", "region", "insurer", "product_class"]
 CONTRACT_NUM = [
-    "log_sum_insured",
     "log_area",
-    "log_si_per_ha",
+    "si_per_ha_rel",
     "coverage_level",
-    "yield_expected",
     "yield_insured_ratio",
     "yield_rel",
     "contract_month",
@@ -143,7 +141,7 @@ def with_gap(fs: FeatureSet, gap: int) -> FeatureSet:
     """History features computed with a label-maturity gap use the *_gap1 columns."""
     if gap == 0:
         return fs
-    gapped = {*HIST, "yield_rel"}
+    gapped = set(HIST)
     num = [f"{c}_gap{gap}" if c in gapped else c for c in fs.num]
     return FeatureSet(fs.name, num, fs.cat, fs.description)
 
@@ -198,8 +196,7 @@ class LGBModel:
 
 class LogRegModel:
     def __init__(self, fs: FeatureSet, C: float = 1.0):
-        # crop-specific units make raw expected yield meaningless in a linear model
-        num = [c for c in fs.num if not c.startswith("yield_expected")]
+        num = list(fs.num)
         self.fs = FeatureSet(fs.name, num, fs.cat)
         pre = ColumnTransformer(
             [

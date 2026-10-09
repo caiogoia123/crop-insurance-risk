@@ -14,6 +14,7 @@ import pandas as pd
 
 from croprisk import calendar, config
 from croprisk.data.psr import load_policies
+from croprisk.features import reference
 
 log = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ TRUNCATED_INSURER = "Too Seguros S.A."  # 2016-2024 file is cut at the Excel row
 MATURITY_LAG_DAYS = 90
 POLICIES_PATH = config.PROCESSED / "policies.parquet"
 REPORT_PATH = config.REPORTS / "cleaning_report.json"
+REFERENCE_PATH = config.PROCESSED / "reference_medians.parquet"
 
 
 def claims_cutoff(df: pd.DataFrame) -> pd.Timestamp:
@@ -109,6 +111,10 @@ def build(df: pd.DataFrame | None = None) -> tuple[pd.DataFrame, dict]:
     df["y"] = (df["indemnity"].fillna(0) > 0).astype("int8")
     df["loss_ratio_num"] = df["indemnity"].fillna(0.0)
 
+    # market references (contract fields only): computed before censoring so the
+    # most recent safras can serve as a reference too
+    ref = reference.reference_medians(df[df["safra_year"].notna()])
+
     cutoff = claims_cutoff(df)
     matured = df["wend"] + pd.Timedelta(days=MATURITY_LAG_DAYS) <= cutoff
     # A safra is kept only if nearly all of it is matured; a partially observed
@@ -132,13 +138,14 @@ def build(df: pd.DataFrame | None = None) -> tuple[pd.DataFrame, dict]:
         "rows": len(df),
         "claim_rate": round(float(df["y"].mean()), 4),
     }
-    return df, report
+    return df, report, ref
 
 
 def main() -> None:
     config.ensure_dirs()
-    df, report = build()
+    df, report, ref = build()
     df.to_parquet(POLICIES_PATH, index=False)
+    ref.to_parquet(REFERENCE_PATH, index=False)
     REPORT_PATH.write_text(json.dumps(report, indent=2, ensure_ascii=False))
     log.info("policies: %d rows, claim rate %.3f", len(df), df["y"].mean())
 
