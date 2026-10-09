@@ -90,6 +90,7 @@ def test_reference_uses_only_previous_safras():
     med = reference.reference_medians(df)
     keys = pd.DataFrame({"uf": ["PR", "MT"], "crop": ["Soja", "Soja"], "safra_year": [2020, 2020]})
     ref = reference.reference_for(med, keys)
-    # safras 2017-2019 have medians 6000, 8000, 10000 -> 8000; MT falls back to national
-    assert ref["siha_ref"].tolist() == [8000.0, 8000.0]
-    assert ref["yld_ref"].iloc[0] == 3000 + 2018
+    # reference = previous safra (2019): median 1000 * 5 * 2; MT falls back to national
+    assert reference.REF_WINDOW == 1
+    assert ref["siha_ref"].tolist() == [10000.0, 10000.0]
+    assert ref["yld_ref"].iloc[0] == 3000 + 2019

@@ -117,14 +117,25 @@ aggregate is based on fewer than 10 policies). Before the first safra there is n
 history and the features are missing. A unit test caught an earlier version that
 filled them with an all-years mean (a small leak into 2006/07 training rows); fixed
 before any reported number.
+- Cumulative policy counts (how many past policies a municipality has) were dropped
+  after the first deployed version showed them as the top SHAP factor: they only
+  grow with time, so they act as a hidden time index and push every new contract to
+  the edge of the training range. The shrinkage already handles credibility.
 
 ### D12. Money and yield are relative to recent market medians
 Soy sum insured per hectare grew from R$695 (2006) to R$5,476 (2023) in nominal
 terms. Raw R$ values put every recent policy outside the training range (score
-PSI 0.45 on the 2023/24 holdout in a first version). Sum insured per hectare and
-expected yield are divided by the median of the same crop and UF over the previous
-3 safras. These medians use contract fields only (no claims), so censored safras
-can also serve as a reference. Area stays in hectares (no inflation).
+Sum insured per hectare and expected yield are divided by the median of the same
+crop and UF in the previous safra (a 3-safra window was tried first; it still
+carried up to 3 years of price growth, a ratio of 1.8 in the 2021/22 commodity
+boom). These medians use contract fields only (no claims), so censored safras can
+also serve as a reference. Area stays in hectares (no inflation).
+
+### D13a. Unknown insurer or product type in the API = expected risk
+If a request omits the insurer or the product type, the API scores one scenario per
+value (top insurers of the last training safra) and averages the probabilities
+weighted by market share. Mapping "not informed" to the "other" category, as a first
+version did, silently treats the contract as a small insurer's.
 
 ### D13. The insurer's rate is not a feature of the main models
 `PE_TAXA` (and the premium and subsidy derived from it) is the benchmark, so the
