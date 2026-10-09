@@ -1,0 +1,41 @@
+{
+  "pre_season": {
+    "top10": {
+      "crop": 0.1903,
+      "insurer": 0.1831,
+      "oni": 0.1801,
+      "hist_muni_cg_rate": 0.136,
+      "hist_muni_rate": 0.1179,
+      "hist_cg_rate": 0.1149,
+      "hist_uf_cg_rate": 0.1112,
+      "clim_cdd": 0.1063,
+      "oni_change_3m": 0.093,
+      "si_per_ha_rel": 0.0815
+    },
+    "share_by_block": {
+      "contract": 0.39446610111776215,
+      "history": 0.28894876845618556,
+      "climatology+ENSO": 0.31658513042605224
+    }
+  },
+  "in_season": {
+    "top10": {
+      "crop": 0.2554,
+      "insurer": 0.2532,
+      "hist_muni_cg_rate": 0.2281,
+      "obs_h50_prec_anom": 0.1997,
+      "hist_cg_rate": 0.1703,
+      "hist_muni_rate": 0.1269,
+      "obs_h50_prec_z": 0.1186,
+      "si_per_ha_rel": 0.0926,
+      "uf": 0.092,
+      "obs_h50_hot_anom": 0.0844
+    },
+    "share_by_block": {
+      "contract": 0.36709310773153714,
+      "history": 0.2096945803025808,
+      "climatology+ENSO": 0.12826644022788525,
+      "season weather": 0.2949458717379968
+    }
+  }
+}

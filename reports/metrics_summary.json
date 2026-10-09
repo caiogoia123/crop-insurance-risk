@@ -1,0 +1,1097 @@
+{
+  "test_safras": [
+    "2013/14",
+    "2014/15",
+    "2015/16",
+    "2016/17",
+    "2017/18",
+    "2018/19",
+    "2019/20",
+    "2020/21",
+    "2021/22",
+    "2022/23",
+    "2023/24"
+  ],
+  "test_policies": 1157908,
+  "test_claim_rate": 0.1822027311323525,
+  "main": [
+    {
+      "experiment": "mean_rate",
+      "model": "Mean claim rate (constant)",
+      "auc_mean": 0.5,
+      "auc_sd": 0.0,
+      "auc_min": 0.5,
+      "ks_mean": 0.0,
+      "gini_mean": 0.0,
+      "pr_auc_mean": 0.1683,
+      "brier_mean": 0.1414,
+      "brier_skill_mean": 0.0,
+      "auc_within_crop": 0.5,
+      "pooled_auc": 0.5486,
+      "safras_beating_rate": 0,
+      "n_safras": 11,
+      "psi_score_mean": 0.0
+    },
+    {
+      "experiment": "insurer_rate",
+      "model": "Insurer's rate (PE_TAXA)",
+      "auc_mean": 0.6255,
+      "auc_sd": 0.08,
+      "auc_min": 0.5105,
+      "ks_mean": 0.2449,
+      "gini_mean": 0.251,
+      "pr_auc_mean": 0.2276,
+      "brier_mean": 0.1388,
+      "brier_skill_mean": 0.0168,
+      "auc_within_crop": 0.5793,
+      "pooled_auc": 0.5938,
+      "safras_beating_rate": 0,
+      "n_safras": 11,
+      "psi_score_mean": 0.2042
+    },
+    {
+      "experiment": "logreg_contract",
+      "model": "Logistic, contract + history",
+      "auc_mean": 0.6445,
+      "auc_sd": 0.0575,
+      "auc_min": 0.555,
+      "ks_mean": 0.2545,
+      "gini_mean": 0.289,
+      "pr_auc_mean": 0.2435,
+      "brier_mean": 0.1405,
+      "brier_skill_mean": -0.0021,
+      "auc_within_crop": 0.5847,
+      "pooled_auc": 0.6381,
+      "safras_beating_rate": 7,
+      "n_safras": 11,
+      "psi_score_mean": 0.2468
+    },
+    {
+      "experiment": "lgbm_contract_only",
+      "model": "LightGBM, contract only",
+      "auc_mean": 0.6221,
+      "auc_sd": 0.0844,
+      "auc_min": 0.5052,
+      "ks_mean": 0.2047,
+      "gini_mean": 0.2442,
+      "pr_auc_mean": 0.2239,
+      "brier_mean": 0.1467,
+      "brier_skill_mean": -0.0378,
+      "auc_within_crop": 0.591,
+      "pooled_auc": 0.6017,
+      "safras_beating_rate": 4,
+      "n_safras": 11,
+      "psi_score_mean": 0.1755
+    },
+    {
+      "experiment": "lgbm_contract",
+      "model": "LightGBM, contract + history",
+      "auc_mean": 0.6379,
+      "auc_sd": 0.0852,
+      "auc_min": 0.487,
+      "ks_mean": 0.2247,
+      "gini_mean": 0.2758,
+      "pr_auc_mean": 0.2475,
+      "brier_mean": 0.145,
+      "brier_skill_mean": -0.009,
+      "auc_within_crop": 0.6216,
+      "pooled_auc": 0.627,
+      "safras_beating_rate": 6,
+      "n_safras": 11,
+      "psi_score_mean": 0.6195
+    },
+    {
+      "experiment": "logreg_pre_season",
+      "model": "Logistic, pre-season (+ climatology)",
+      "auc_mean": 0.646,
+      "auc_sd": 0.0581,
+      "auc_min": 0.5615,
+      "ks_mean": 0.2479,
+      "gini_mean": 0.292,
+      "pr_auc_mean": 0.245,
+      "brier_mean": 0.1398,
+      "brier_skill_mean": -0.0127,
+      "auc_within_crop": 0.5932,
+      "pooled_auc": 0.6513,
+      "safras_beating_rate": 7,
+      "n_safras": 11,
+      "psi_score_mean": 0.2074
+    },
+    {
+      "experiment": "lgbm_pre_season",
+      "model": "LightGBM, pre-season (+ climatology, ENSO)",
+      "auc_mean": 0.6327,
+      "auc_sd": 0.1113,
+      "auc_min": 0.3911,
+      "ks_mean": 0.2726,
+      "gini_mean": 0.2654,
+      "pr_auc_mean": 0.2484,
+      "brier_mean": 0.1404,
+      "brier_skill_mean": 0.0171,
+      "auc_within_crop": 0.5965,
+      "pooled_auc": 0.6274,
+      "safras_beating_rate": 7,
+      "n_safras": 11,
+      "psi_score_mean": 0.8714
+    },
+    {
+      "experiment": "lgbm_pre_season_rate",
+      "model": "LightGBM, pre-season + insurer's rate",
+      "auc_mean": 0.6427,
+      "auc_sd": 0.106,
+      "auc_min": 0.4326,
+      "ks_mean": 0.2766,
+      "gini_mean": 0.2854,
+      "pr_auc_mean": 0.2528,
+      "brier_mean": 0.1397,
+      "brier_skill_mean": 0.0228,
+      "auc_within_crop": 0.6061,
+      "pooled_auc": 0.6348,
+      "safras_beating_rate": 7,
+      "n_safras": 11,
+      "psi_score_mean": 0.8294
+    },
+    {
+      "experiment": "logreg_in_season",
+      "model": "Logistic, in-season (mid-window weather)",
+      "auc_mean": 0.6829,
+      "auc_sd": 0.0718,
+      "auc_min": 0.5798,
+      "ks_mean": 0.305,
+      "gini_mean": 0.3657,
+      "pr_auc_mean": 0.2834,
+      "brier_mean": 0.1338,
+      "brier_skill_mean": 0.0357,
+      "auc_within_crop": 0.6242,
+      "pooled_auc": 0.7134,
+      "safras_beating_rate": 9,
+      "n_safras": 11,
+      "psi_score_mean": 0.2567
+    },
+    {
+      "experiment": "lgbm_in_season",
+      "model": "LightGBM, in-season (mid-window weather)",
+      "auc_mean": 0.6954,
+      "auc_sd": 0.0693,
+      "auc_min": 0.5579,
+      "ks_mean": 0.3071,
+      "gini_mean": 0.3907,
+      "pr_auc_mean": 0.2988,
+      "brier_mean": 0.1344,
+      "brier_skill_mean": 0.0509,
+      "auc_within_crop": 0.6626,
+      "pooled_auc": 0.7164,
+      "safras_beating_rate": 9,
+      "n_safras": 11,
+      "psi_score_mean": 0.9116
+    },
+    {
+      "experiment": "lgbm_end_of_window",
+      "model": "LightGBM, end of critical window",
+      "auc_mean": 0.6901,
+      "auc_sd": 0.0727,
+      "auc_min": 0.5946,
+      "ks_mean": 0.2976,
+      "gini_mean": 0.3803,
+      "pr_auc_mean": 0.2942,
+      "brier_mean": 0.1362,
+      "brier_skill_mean": 0.04,
+      "auc_within_crop": 0.6632,
+      "pooled_auc": 0.6955,
+      "safras_beating_rate": 10,
+      "n_safras": 11,
+      "psi_score_mean": 0.9715
+    }
+  ],
+  "sensitivity": [
+    {
+      "experiment": "lgbm_contract",
+      "model": "LightGBM, contract + history",
+      "auc_mean": 0.6379,
+      "auc_sd": 0.0852,
+      "auc_min": 0.487,
+      "ks_mean": 0.2247,
+      "gini_mean": 0.2758,
+      "pr_auc_mean": 0.2475,
+      "brier_mean": 0.145,
+      "brier_skill_mean": -0.009,
+      "auc_within_crop": 0.6216,
+      "pooled_auc": 0.627,
+      "safras_beating_rate": 6,
+      "n_safras": 11,
+      "psi_score_mean": 0.6195
+    },
+    {
+      "experiment": "lgbm_pre_season",
+      "model": "LightGBM, pre-season (+ climatology, ENSO)",
+      "auc_mean": 0.6327,
+      "auc_sd": 0.1113,
+      "auc_min": 0.3911,
+      "ks_mean": 0.2726,
+      "gini_mean": 0.2654,
+      "pr_auc_mean": 0.2484,
+      "brier_mean": 0.1404,
+      "brier_skill_mean": 0.0171,
+      "auc_within_crop": 0.5965,
+      "pooled_auc": 0.6274,
+      "safras_beating_rate": 7,
+      "n_safras": 11,
+      "psi_score_mean": 0.8714
+    },
+    {
+      "experiment": "lgbm_in_season",
+      "model": "LightGBM, in-season (mid-window weather)",
+      "auc_mean": 0.6954,
+      "auc_sd": 0.0693,
+      "auc_min": 0.5579,
+      "ks_mean": 0.3071,
+      "gini_mean": 0.3907,
+      "pr_auc_mean": 0.2988,
+      "brier_mean": 0.1344,
+      "brier_skill_mean": 0.0509,
+      "auc_within_crop": 0.6626,
+      "pooled_auc": 0.7164,
+      "safras_beating_rate": 9,
+      "n_safras": 11,
+      "psi_score_mean": 0.9116
+    },
+    {
+      "experiment": "lgbm_contract_gap1",
+      "model": "LightGBM contract + history, 1-safra gap",
+      "auc_mean": 0.6139,
+      "auc_sd": 0.1021,
+      "auc_min": 0.4385,
+      "ks_mean": 0.2347,
+      "gini_mean": 0.2277,
+      "pr_auc_mean": 0.2366,
+      "brier_mean": 0.1489,
+      "brier_skill_mean": -0.0412,
+      "auc_within_crop": 0.5943,
+      "pooled_auc": 0.6065,
+      "safras_beating_rate": 6,
+      "n_safras": 11,
+      "psi_score_mean": 0.5778
+    },
+    {
+      "experiment": "lgbm_pre_season_gap1",
+      "model": "LightGBM pre-season, 1-safra gap",
+      "auc_mean": 0.6116,
+      "auc_sd": 0.1062,
+      "auc_min": 0.412,
+      "ks_mean": 0.2569,
+      "gini_mean": 0.2233,
+      "pr_auc_mean": 0.2338,
+      "brier_mean": 0.144,
+      "brier_skill_mean": -0.0109,
+      "auc_within_crop": 0.5584,
+      "pooled_auc": 0.6156,
+      "safras_beating_rate": 5,
+      "n_safras": 11,
+      "psi_score_mean": 1.0011
+    },
+    {
+      "experiment": "lgbm_in_season_gap1",
+      "model": "LightGBM in-season, 1-safra gap",
+      "auc_mean": 0.6699,
+      "auc_sd": 0.0686,
+      "auc_min": 0.5318,
+      "ks_mean": 0.2788,
+      "gini_mean": 0.3399,
+      "pr_auc_mean": 0.2698,
+      "brier_mean": 0.1391,
+      "brier_skill_mean": 0.0212,
+      "auc_within_crop": 0.638,
+      "pooled_auc": 0.6842,
+      "safras_beating_rate": 9,
+      "n_safras": 11,
+      "psi_score_mean": 1.2139
+    },
+    {
+      "experiment": "lgbm_pre_season_roll8",
+      "model": "LightGBM pre-season, rolling 8 safras",
+      "auc_mean": 0.6305,
+      "auc_sd": 0.1057,
+      "auc_min": 0.4091,
+      "ks_mean": 0.2526,
+      "gini_mean": 0.261,
+      "pr_auc_mean": 0.2486,
+      "brier_mean": 0.1417,
+      "brier_skill_mean": 0.0059,
+      "auc_within_crop": 0.6035,
+      "pooled_auc": 0.6156,
+      "safras_beating_rate": 7,
+      "n_safras": 11,
+      "psi_score_mean": 0.5904
+    }
+  ],
+  "deltas": {
+    "climatology_vs_contract": {
+      "a": "lgbm_pre_season",
+      "b": "lgbm_contract",
+      "metric": "auc",
+      "mean_delta": -0.005234901523581566,
+      "ci95": [
+        -0.029479504245340942,
+        0.019009701198177808
+      ],
+      "safras_a_better": 4,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.0193,
+        "2014": -0.0,
+        "2015": -0.008,
+        "2016": 0.026,
+        "2017": -0.0162,
+        "2018": 0.0164,
+        "2019": -0.0167,
+        "2020": 0.0357,
+        "2021": -0.1001,
+        "2022": -0.0076,
+        "2023": -0.0062
+      }
+    },
+    "in_season_vs_pre_season": {
+      "a": "lgbm_in_season",
+      "b": "lgbm_pre_season",
+      "metric": "auc",
+      "mean_delta": 0.06267636876560088,
+      "ci95": [
+        0.0035075452702575047,
+        0.12184519226094426
+      ],
+      "safras_a_better": 10,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.0241,
+        "2014": 0.0289,
+        "2015": 0.0789,
+        "2016": 0.0183,
+        "2017": 0.01,
+        "2018": -0.0114,
+        "2019": 0.0293,
+        "2020": 0.0164,
+        "2021": 0.3056,
+        "2022": 0.1026,
+        "2023": 0.0868
+      }
+    },
+    "pre_season_vs_insurer_rate": {
+      "a": "lgbm_pre_season",
+      "b": "insurer_rate",
+      "metric": "auc",
+      "mean_delta": 0.007184665656292963,
+      "ci95": [
+        -0.04448538915211807,
+        0.058854720464704
+      ],
+      "safras_a_better": 7,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.0924,
+        "2014": 0.1171,
+        "2015": -0.0971,
+        "2016": 0.0343,
+        "2017": -0.0679,
+        "2018": 0.0773,
+        "2019": -0.0172,
+        "2020": 0.0305,
+        "2021": -0.1194,
+        "2022": 0.0005,
+        "2023": 0.0284
+      }
+    },
+    "contract_vs_insurer_rate": {
+      "a": "lgbm_contract",
+      "b": "insurer_rate",
+      "metric": "auc",
+      "mean_delta": 0.01241956717987453,
+      "ci95": [
+        -0.026407779249320168,
+        0.05124691360906923
+      ],
+      "safras_a_better": 6,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.0731,
+        "2014": 0.1172,
+        "2015": -0.089,
+        "2016": 0.0083,
+        "2017": -0.0516,
+        "2018": 0.0609,
+        "2019": -0.0005,
+        "2020": -0.0052,
+        "2021": -0.0192,
+        "2022": 0.008,
+        "2023": 0.0346
+      }
+    },
+    "in_season_vs_insurer_rate": {
+      "a": "lgbm_in_season",
+      "b": "insurer_rate",
+      "metric": "auc",
+      "mean_delta": 0.06986103442189384,
+      "ci95": [
+        0.020993083562130803,
+        0.11872898528165687
+      ],
+      "safras_a_better": 9,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.1165,
+        "2014": 0.146,
+        "2015": -0.0181,
+        "2016": 0.0526,
+        "2017": -0.0579,
+        "2018": 0.0659,
+        "2019": 0.0121,
+        "2020": 0.0469,
+        "2021": 0.1863,
+        "2022": 0.103,
+        "2023": 0.1152
+      }
+    },
+    "rate_feature_vs_pre_season": {
+      "a": "lgbm_pre_season_rate",
+      "b": "lgbm_pre_season",
+      "metric": "auc",
+      "mean_delta": 0.010018697195419974,
+      "ci95": [
+        -0.008094226852674807,
+        0.028131621243514753
+      ],
+      "safras_a_better": 6,
+      "n": 11,
+      "by_safra": {
+        "2013": -0.0108,
+        "2014": -0.0063,
+        "2015": 0.0012,
+        "2016": 0.0163,
+        "2017": 0.0102,
+        "2018": -0.0148,
+        "2019": 0.0038,
+        "2020": -0.0041,
+        "2021": 0.0415,
+        "2022": 0.0765,
+        "2023": -0.0032
+      }
+    },
+    "lgbm_vs_logreg_pre_season": {
+      "a": "lgbm_pre_season",
+      "b": "logreg_pre_season",
+      "metric": "auc",
+      "mean_delta": -0.013340244278391694,
+      "ci95": [
+        -0.06441915436239018,
+        0.03773866580560679
+      ],
+      "safras_a_better": 7,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.0368,
+        "2014": 0.0815,
+        "2015": -0.0825,
+        "2016": 0.0366,
+        "2017": 0.0024,
+        "2018": 0.0018,
+        "2019": 0.0079,
+        "2020": -0.0027,
+        "2021": -0.2059,
+        "2022": -0.0322,
+        "2023": 0.0095
+      }
+    },
+    "history_vs_contract_only": {
+      "a": "lgbm_contract",
+      "b": "lgbm_contract_only",
+      "metric": "auc",
+      "mean_delta": 0.015824250560251475,
+      "ci95": [
+        -0.01882621831235972,
+        0.05047471943286267
+      ],
+      "safras_a_better": 7,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.0168,
+        "2014": 0.0151,
+        "2015": -0.0385,
+        "2016": 0.0658,
+        "2017": -0.033,
+        "2018": 0.071,
+        "2019": 0.0794,
+        "2020": 0.0568,
+        "2021": -0.0139,
+        "2022": -0.0782,
+        "2023": 0.0328
+      }
+    },
+    "gap1_cost_pre_season": {
+      "a": "lgbm_pre_season_gap1",
+      "b": "lgbm_pre_season",
+      "metric": "auc",
+      "mean_delta": -0.021050864838176465,
+      "ci95": [
+        -0.04820723147665806,
+        0.006105501800305137
+      ],
+      "safras_a_better": 4,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.0101,
+        "2014": -0.0483,
+        "2015": -0.0111,
+        "2016": 0.0075,
+        "2017": -0.0742,
+        "2018": 0.0248,
+        "2019": -0.0072,
+        "2020": -0.0121,
+        "2021": 0.0209,
+        "2022": -0.041,
+        "2023": -0.1009
+      }
+    }
+  },
+  "deciles": {
+    "insurer_rate": [
+      {
+        "decile": 1,
+        "policies": 115796,
+        "claim_rate": 0.0625,
+        "mean_score": 0.0698,
+        "loss_ratio": 0.5606,
+        "share_of_claims": 0.0343,
+        "share_of_indemnity": 0.0396,
+        "lift": 0.3429
+      },
+      {
+        "decile": 2,
+        "policies": 115789,
+        "claim_rate": 0.1055,
+        "mean_score": 0.099,
+        "loss_ratio": 0.6733,
+        "share_of_claims": 0.0579,
+        "share_of_indemnity": 0.0704,
+        "lift": 0.5788
+      },
+      {
+        "decile": 3,
+        "policies": 115790,
+        "claim_rate": 0.1573,
+        "mean_score": 0.1141,
+        "loss_ratio": 0.9324,
+        "share_of_claims": 0.0863,
+        "share_of_indemnity": 0.0832,
+        "lift": 0.8635
+      },
+      {
+        "decile": 4,
+        "policies": 115790,
+        "claim_rate": 0.1704,
+        "mean_score": 0.1243,
+        "loss_ratio": 1.05,
+        "share_of_claims": 0.0935,
+        "share_of_indemnity": 0.1025,
+        "lift": 0.9351
+      },
+      {
+        "decile": 5,
+        "policies": 115791,
+        "claim_rate": 0.1706,
+        "mean_score": 0.1356,
+        "loss_ratio": 0.9627,
+        "share_of_claims": 0.0936,
+        "share_of_indemnity": 0.1056,
+        "lift": 0.9362
+      },
+      {
+        "decile": 6,
+        "policies": 115789,
+        "claim_rate": 0.2061,
+        "mean_score": 0.1481,
+        "loss_ratio": 1.0911,
+        "share_of_claims": 0.1131,
+        "share_of_indemnity": 0.1361,
+        "lift": 1.131
+      },
+      {
+        "decile": 7,
+        "policies": 115789,
+        "claim_rate": 0.2206,
+        "mean_score": 0.164,
+        "loss_ratio": 1.0288,
+        "share_of_claims": 0.1211,
+        "share_of_indemnity": 0.1511,
+        "lift": 1.2107
+      },
+      {
+        "decile": 8,
+        "policies": 115791,
+        "claim_rate": 0.2212,
+        "mean_score": 0.1832,
+        "loss_ratio": 0.7988,
+        "share_of_claims": 0.1214,
+        "share_of_indemnity": 0.1185,
+        "lift": 1.2139
+      },
+      {
+        "decile": 9,
+        "policies": 115788,
+        "claim_rate": 0.2739,
+        "mean_score": 0.2039,
+        "loss_ratio": 0.8112,
+        "share_of_claims": 0.1503,
+        "share_of_indemnity": 0.1161,
+        "lift": 1.5032
+      },
+      {
+        "decile": 10,
+        "policies": 115795,
+        "claim_rate": 0.2341,
+        "mean_score": 0.2341,
+        "loss_ratio": 0.5441,
+        "share_of_claims": 0.1285,
+        "share_of_indemnity": 0.077,
+        "lift": 1.2848
+      }
+    ],
+    "lgbm_pre_season": [
+      {
+        "decile": 1,
+        "policies": 115796,
+        "claim_rate": 0.0934,
+        "mean_score": 0.0364,
+        "loss_ratio": 0.5042,
+        "share_of_claims": 0.0512,
+        "share_of_indemnity": 0.0443,
+        "lift": 0.5124
+      },
+      {
+        "decile": 2,
+        "policies": 115789,
+        "claim_rate": 0.139,
+        "mean_score": 0.0486,
+        "loss_ratio": 0.8618,
+        "share_of_claims": 0.0763,
+        "share_of_indemnity": 0.0909,
+        "lift": 0.7631
+      },
+      {
+        "decile": 3,
+        "policies": 115790,
+        "claim_rate": 0.1479,
+        "mean_score": 0.0581,
+        "loss_ratio": 0.8911,
+        "share_of_claims": 0.0811,
+        "share_of_indemnity": 0.0978,
+        "lift": 0.8115
+      },
+      {
+        "decile": 4,
+        "policies": 115790,
+        "claim_rate": 0.1721,
+        "mean_score": 0.0686,
+        "loss_ratio": 1.1257,
+        "share_of_claims": 0.0944,
+        "share_of_indemnity": 0.1289,
+        "lift": 0.9443
+      },
+      {
+        "decile": 5,
+        "policies": 115791,
+        "claim_rate": 0.1684,
+        "mean_score": 0.0824,
+        "loss_ratio": 0.9653,
+        "share_of_claims": 0.0924,
+        "share_of_indemnity": 0.1243,
+        "lift": 0.9242
+      },
+      {
+        "decile": 6,
+        "policies": 115789,
+        "claim_rate": 0.1693,
+        "mean_score": 0.1011,
+        "loss_ratio": 0.8972,
+        "share_of_claims": 0.0929,
+        "share_of_indemnity": 0.1147,
+        "lift": 0.9294
+      },
+      {
+        "decile": 7,
+        "policies": 115789,
+        "claim_rate": 0.1849,
+        "mean_score": 0.1269,
+        "loss_ratio": 0.8433,
+        "share_of_claims": 0.1015,
+        "share_of_indemnity": 0.109,
+        "lift": 1.015
+      },
+      {
+        "decile": 8,
+        "policies": 115791,
+        "claim_rate": 0.217,
+        "mean_score": 0.1667,
+        "loss_ratio": 0.7072,
+        "share_of_claims": 0.1191,
+        "share_of_indemnity": 0.089,
+        "lift": 1.1907
+      },
+      {
+        "decile": 9,
+        "policies": 115788,
+        "claim_rate": 0.2384,
+        "mean_score": 0.2177,
+        "loss_ratio": 0.7531,
+        "share_of_claims": 0.1309,
+        "share_of_indemnity": 0.0829,
+        "lift": 1.3086
+      },
+      {
+        "decile": 10,
+        "policies": 115795,
+        "claim_rate": 0.2917,
+        "mean_score": 0.2954,
+        "loss_ratio": 0.8637,
+        "share_of_claims": 0.1601,
+        "share_of_indemnity": 0.1183,
+        "lift": 1.6008
+      }
+    ],
+    "lgbm_in_season": [
+      {
+        "decile": 1,
+        "policies": 115796,
+        "claim_rate": 0.0365,
+        "mean_score": 0.0166,
+        "loss_ratio": 0.147,
+        "share_of_claims": 0.02,
+        "share_of_indemnity": 0.0128,
+        "lift": 0.2001
+      },
+      {
+        "decile": 2,
+        "policies": 115789,
+        "claim_rate": 0.0662,
+        "mean_score": 0.028,
+        "loss_ratio": 0.298,
+        "share_of_claims": 0.0363,
+        "share_of_indemnity": 0.0304,
+        "lift": 0.3633
+      },
+      {
+        "decile": 3,
+        "policies": 115790,
+        "claim_rate": 0.092,
+        "mean_score": 0.0399,
+        "loss_ratio": 0.4118,
+        "share_of_claims": 0.0505,
+        "share_of_indemnity": 0.0454,
+        "lift": 0.5047
+      },
+      {
+        "decile": 4,
+        "policies": 115790,
+        "claim_rate": 0.127,
+        "mean_score": 0.0543,
+        "loss_ratio": 0.5508,
+        "share_of_claims": 0.0697,
+        "share_of_indemnity": 0.0654,
+        "lift": 0.6972
+      },
+      {
+        "decile": 5,
+        "policies": 115791,
+        "claim_rate": 0.1599,
+        "mean_score": 0.0725,
+        "loss_ratio": 0.6953,
+        "share_of_claims": 0.0878,
+        "share_of_indemnity": 0.0854,
+        "lift": 0.8775
+      },
+      {
+        "decile": 6,
+        "policies": 115789,
+        "claim_rate": 0.1868,
+        "mean_score": 0.0965,
+        "loss_ratio": 0.8355,
+        "share_of_claims": 0.1025,
+        "share_of_indemnity": 0.1053,
+        "lift": 1.0251
+      },
+      {
+        "decile": 7,
+        "policies": 115789,
+        "claim_rate": 0.2132,
+        "mean_score": 0.1282,
+        "loss_ratio": 1.0383,
+        "share_of_claims": 0.117,
+        "share_of_indemnity": 0.127,
+        "lift": 1.17
+      },
+      {
+        "decile": 8,
+        "policies": 115791,
+        "claim_rate": 0.2611,
+        "mean_score": 0.1707,
+        "loss_ratio": 1.2378,
+        "share_of_claims": 0.1433,
+        "share_of_indemnity": 0.141,
+        "lift": 1.4328
+      },
+      {
+        "decile": 9,
+        "policies": 115788,
+        "claim_rate": 0.3031,
+        "mean_score": 0.2298,
+        "loss_ratio": 1.3905,
+        "share_of_claims": 0.1663,
+        "share_of_indemnity": 0.1533,
+        "lift": 1.6633
+      },
+      {
+        "decile": 10,
+        "policies": 115795,
+        "claim_rate": 0.3764,
+        "mean_score": 0.3495,
+        "loss_ratio": 1.4367,
+        "share_of_claims": 0.2066,
+        "share_of_indemnity": 0.234,
+        "lift": 2.0659
+      }
+    ]
+  },
+  "double_lift_pre_season_vs_rate": [
+    {
+      "decile": 1,
+      "claim_rate": 0.1475,
+      "model_mean": 0.0435,
+      "rate_implied_mean": 0.1507,
+      "loss_ratio": 0.6966,
+      "mean_rate_charged": 0.0851
+    },
+    {
+      "decile": 2,
+      "claim_rate": 0.1626,
+      "model_mean": 0.055,
+      "rate_implied_mean": 0.1422,
+      "loss_ratio": 0.8591,
+      "mean_rate_charged": 0.0768
+    },
+    {
+      "decile": 3,
+      "claim_rate": 0.1673,
+      "model_mean": 0.0648,
+      "rate_implied_mean": 0.1393,
+      "loss_ratio": 0.9491,
+      "mean_rate_charged": 0.0752
+    },
+    {
+      "decile": 4,
+      "claim_rate": 0.1617,
+      "model_mean": 0.0768,
+      "rate_implied_mean": 0.1428,
+      "loss_ratio": 0.9107,
+      "mean_rate_charged": 0.079
+    },
+    {
+      "decile": 5,
+      "claim_rate": 0.1554,
+      "model_mean": 0.0912,
+      "rate_implied_mean": 0.1464,
+      "loss_ratio": 0.8272,
+      "mean_rate_charged": 0.0824
+    },
+    {
+      "decile": 6,
+      "claim_rate": 0.1632,
+      "model_mean": 0.1099,
+      "rate_implied_mean": 0.1519,
+      "loss_ratio": 0.7806,
+      "mean_rate_charged": 0.087
+    },
+    {
+      "decile": 7,
+      "claim_rate": 0.1839,
+      "model_mean": 0.1308,
+      "rate_implied_mean": 0.1539,
+      "loss_ratio": 0.8297,
+      "mean_rate_charged": 0.0892
+    },
+    {
+      "decile": 8,
+      "claim_rate": 0.1949,
+      "model_mean": 0.1654,
+      "rate_implied_mean": 0.1585,
+      "loss_ratio": 0.7812,
+      "mean_rate_charged": 0.0945
+    },
+    {
+      "decile": 9,
+      "claim_rate": 0.2426,
+      "model_mean": 0.215,
+      "rate_implied_mean": 0.1617,
+      "loss_ratio": 0.8937,
+      "mean_rate_charged": 0.0983
+    },
+    {
+      "decile": 10,
+      "claim_rate": 0.2428,
+      "model_mean": 0.2494,
+      "rate_implied_mean": 0.1288,
+      "loss_ratio": 0.9978,
+      "mean_rate_charged": 0.0694
+    }
+  ],
+  "auc_by_crop_group": {
+    "insurer_rate": {
+      "arroz": 0.557,
+      "cafe": 0.638,
+      "cana": 0.608,
+      "feijao_1": 0.672,
+      "fruta_temperada": 0.558,
+      "hortalicas": 0.562,
+      "inverno": 0.559,
+      "milho_1": 0.636,
+      "milho_2": 0.573,
+      "safrinha_outros": 0.621,
+      "soja": 0.578
+    },
+    "lgbm_contract": {
+      "arroz": 0.668,
+      "cafe": 0.741,
+      "cana": 0.647,
+      "feijao_1": 0.715,
+      "fruta_temperada": 0.595,
+      "hortalicas": 0.648,
+      "inverno": 0.527,
+      "milho_1": 0.661,
+      "milho_2": 0.605,
+      "safrinha_outros": 0.699,
+      "soja": 0.629
+    },
+    "lgbm_pre_season": {
+      "arroz": 0.641,
+      "cafe": 0.692,
+      "cana": 0.586,
+      "feijao_1": 0.666,
+      "fruta_temperada": 0.584,
+      "hortalicas": 0.638,
+      "inverno": 0.587,
+      "milho_1": 0.584,
+      "milho_2": 0.596,
+      "safrinha_outros": 0.702,
+      "soja": 0.583
+    },
+    "lgbm_in_season": {
+      "arroz": 0.683,
+      "cafe": 0.731,
+      "cana": 0.627,
+      "feijao_1": 0.704,
+      "fruta_temperada": 0.598,
+      "hortalicas": 0.662,
+      "inverno": 0.572,
+      "milho_1": 0.724,
+      "milho_2": 0.631,
+      "safrinha_outros": 0.677,
+      "soja": 0.698
+    }
+  },
+  "in_season_claims_by_event": [
+    {
+      "event": "SECA",
+      "claims": 121547,
+      "share_top2_deciles": 0.298
+    },
+    {
+      "event": "GRANIZO",
+      "claims": 45169,
+      "share_top2_deciles": 0.568
+    },
+    {
+      "event": "GEADA",
+      "claims": 26130,
+      "share_top2_deciles": 0.5
+    },
+    {
+      "event": "CHUVA EXCESSIVA",
+      "claims": 11223,
+      "share_top2_deciles": 0.174
+    },
+    {
+      "event": "VENTOS FORTES/FRIOS",
+      "claims": 2945,
+      "share_top2_deciles": 0.22
+    },
+    {
+      "event": "INUNDAÇÃO/TROMBA D´ÁGUA",
+      "claims": 2481,
+      "share_top2_deciles": 0.272
+    },
+    {
+      "event": "VARIAÇÃO EXCESSIVA DE TEMPERATURA",
+      "claims": 666,
+      "share_top2_deciles": 0.321
+    },
+    {
+      "event": "INCÊNDIO",
+      "claims": 311,
+      "share_top2_deciles": 0.08
+    }
+  ],
+  "psi_score_by_safra": [
+    {
+      "safra_year": 2013,
+      "lgbm_in_season": 0.4716,
+      "lgbm_pre_season": 0.9696
+    },
+    {
+      "safra_year": 2014,
+      "lgbm_in_season": 0.927,
+      "lgbm_pre_season": 0.977
+    },
+    {
+      "safra_year": 2015,
+      "lgbm_in_season": 1.245,
+      "lgbm_pre_season": 0.8031
+    },
+    {
+      "safra_year": 2016,
+      "lgbm_in_season": 0.6801,
+      "lgbm_pre_season": 1.1804
+    },
+    {
+      "safra_year": 2017,
+      "lgbm_in_season": 1.1529,
+      "lgbm_pre_season": 1.2189
+    },
+    {
+      "safra_year": 2018,
+      "lgbm_in_season": 1.46,
+      "lgbm_pre_season": 0.9494
+    },
+    {
+      "safra_year": 2019,
+      "lgbm_in_season": 1.1523,
+      "lgbm_pre_season": 0.8719
+    },
+    {
+      "safra_year": 2020,
+      "lgbm_in_season": 0.4847,
+      "lgbm_pre_season": 0.1684
+    },
+    {
+      "safra_year": 2021,
+      "lgbm_in_season": 1.0624,
+      "lgbm_pre_season": 1.0145
+    },
+    {
+      "safra_year": 2022,
+      "lgbm_in_season": 0.5431,
+      "lgbm_pre_season": 1.021
+    },
+    {
+      "safra_year": 2023,
+      "lgbm_in_season": 0.8481,
+      "lgbm_pre_season": 0.411
+    }
+  ]
+}

@@ -99,3 +99,26 @@ def test_meta_endpoints(client):
     mun = client.get("/meta/municipalities", params={"uf": "pr"}).json()
     assert mun == [{"ibge_code": 4104808, "name": "Cascavel"}]
     assert client.get("/meta/municipalities", params={"uf": "XX"}).status_code == 404
+
+
+def test_contributions_explain_the_logit(bundle_dir):
+    """Linear SHAP: intercept + coef . mean(z) + sum(contributions) = logit(p)."""
+    import numpy as np
+
+    from croprisk.serving.bundle import Bundle, current_dir
+
+    b = Bundle.load(current_dir(bundle_dir))
+    X, _ = b.features({**VALID})
+    lr = b.model.pipe.named_steps["lr"]
+    base = lr.intercept_[0] + float(np.dot(lr.coef_[0], b.model.z_mean))
+    p = b.model.predict(X)[0]
+    assert np.isclose(base + b.model.contributions(X).sum(), np.log(p / (1 - p)), atol=1e-6)
+
+
+def test_lightgbm_bundle_still_supported(bundle_dir_lgbm):
+    from croprisk.serving.bundle import Bundle, current_dir
+
+    b = Bundle.load(current_dir(bundle_dir_lgbm))
+    out = b.predict({**VALID})
+    assert 0 < out["probability"] < 1
+    assert len(out["top_factors"]) == 5

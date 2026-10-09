@@ -2,7 +2,8 @@
 
 Layout of a bundle directory::
 
-    model.txt           LightGBM booster (pre-season model)
+    model.joblib        served model (logistic regression pipeline), or
+    model.txt           LightGBM booster when meta["algo"] == "lgbm"
     meta.json           version, features, categories, metrics, data snapshot
     rate_calib.json     logistic map log(rate) -> claim probability (for comparison)
     tables/*.parquet    aggregated lookup tables (no policy-level data):
@@ -22,11 +23,12 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
+import joblib
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
 
-from croprisk import calendar
+from croprisk import calendar, models
 from croprisk.data import enso
 from croprisk.features import reference
 
@@ -39,10 +41,21 @@ def current_dir(models_dir: Path) -> Path:
     return models_dir / pointer.read_text().strip()
 
 
+def load_model(path: Path, meta: dict):
+    """The served model with `predict` and `contributions` (log-odds per feature)."""
+    if meta.get("algo", "lgbm") == "logreg":
+        return joblib.load(path / "model.joblib")  # our own artifact, never user input
+    cat = meta["cat_features"]
+    fs = models.FeatureSet("served", [f for f in meta["features"] if f not in cat], list(cat))
+    m = models.LGBModel(fs)
+    m.booster = lgb.Booster(model_file=str(path / "model.txt"))
+    return m
+
+
 @dataclass
 class Bundle:
     path: Path
-    booster: lgb.Booster
+    model: object
     meta: dict
     rate_calib: dict
     tables: dict[str, pd.DataFrame]
@@ -50,11 +63,11 @@ class Bundle:
     @classmethod
     def load(cls, path: Path) -> Bundle:
         path = Path(path)
-        booster = lgb.Booster(model_file=str(path / "model.txt"))
         meta = json.loads((path / "meta.json").read_text(encoding="utf-8"))
+        model = load_model(path, meta)
         rate_calib = json.loads((path / "rate_calib.json").read_text())
         tables = {t: pd.read_parquet(path / "tables" / f"{t}.parquet") for t in TABLES}
-        b = cls(path, booster, meta, rate_calib, tables)
+        b = cls(path, model, meta, rate_calib, tables)
         b._index()
         return b
 
@@ -197,10 +210,10 @@ class Bundle:
     def predict(self, req: dict, top_k: int = 5) -> dict:
         X, ctx = self.features(req)
         rows, w = self._scenarios(X)
-        p = float(np.dot(w, self.booster.predict(rows)))
-        contrib = np.average(self.booster.predict(rows, pred_contrib=True), axis=0, weights=w)
+        p = float(np.dot(w, self.model.predict(rows)))
+        contrib = np.average(self.model.contributions(rows), axis=0, weights=w)
         names = self.meta["features"]
-        order = np.argsort(-np.abs(contrib[:-1]))[:top_k]
+        order = np.argsort(-np.abs(contrib))[:top_k]
 
         def value(i):
             v = X.iloc[0, i]

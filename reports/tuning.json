@@ -1,0 +1,742 @@
+{
+  "contract": {
+    "params": {
+      "num_leaves": 127,
+      "min_child_samples": 2000
+    },
+    "rounds": 300,
+    "mean_auc": 0.6720749878955954,
+    "grid": [
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 50,
+        "mean_auc": 0.657380816903592
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 100,
+        "mean_auc": 0.6599336291184785
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 200,
+        "mean_auc": 0.6639270530533412
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 300,
+        "mean_auc": 0.6666743401398352
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 400,
+        "mean_auc": 0.6687510818492308
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 600,
+        "mean_auc": 0.6669808637056613
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 800,
+        "mean_auc": 0.6665104600851778
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 50,
+        "mean_auc": 0.6561596206298015
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 100,
+        "mean_auc": 0.6609659609247125
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 200,
+        "mean_auc": 0.6625445739274805
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 300,
+        "mean_auc": 0.6635216629810242
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 400,
+        "mean_auc": 0.6634701474746801
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 600,
+        "mean_auc": 0.6590477649008518
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 800,
+        "mean_auc": 0.6566198433195455
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 50,
+        "mean_auc": 0.6581346046614611
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 100,
+        "mean_auc": 0.6653877745975623
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 200,
+        "mean_auc": 0.668341951473536
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 300,
+        "mean_auc": 0.6650438005130199
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 400,
+        "mean_auc": 0.6648419248360293
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 600,
+        "mean_auc": 0.6642947871328211
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 800,
+        "mean_auc": 0.6608850088184011
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 50,
+        "mean_auc": 0.6620236117226002
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 100,
+        "mean_auc": 0.663818389604105
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 200,
+        "mean_auc": 0.6715712436363417
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 300,
+        "mean_auc": 0.6720749878955954
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 400,
+        "mean_auc": 0.6708176022297849
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 600,
+        "mean_auc": 0.6659902555612895
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 800,
+        "mean_auc": 0.6628477621784146
+      }
+    ],
+    "validation_safras": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "criterion": "mean AUC over validation safras"
+  },
+  "end_of_window": {
+    "params": {
+      "num_leaves": 127,
+      "min_child_samples": 2000
+    },
+    "rounds": 200,
+    "mean_auc": 0.7465528116353684,
+    "grid": [
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 50,
+        "mean_auc": 0.7301795436790924
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 100,
+        "mean_auc": 0.742310186642091
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 200,
+        "mean_auc": 0.7437907604592641
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 300,
+        "mean_auc": 0.7444837240112185
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 400,
+        "mean_auc": 0.7459371644270022
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 600,
+        "mean_auc": 0.7450604256636693
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 800,
+        "mean_auc": 0.7447289798336709
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 50,
+        "mean_auc": 0.7268094992536609
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 100,
+        "mean_auc": 0.7402792621538435
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 200,
+        "mean_auc": 0.7404012445030471
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 300,
+        "mean_auc": 0.740348809837762
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 400,
+        "mean_auc": 0.7391810041168223
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 600,
+        "mean_auc": 0.7384052186792912
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 800,
+        "mean_auc": 0.7368051177617871
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 50,
+        "mean_auc": 0.7286078879785145
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 100,
+        "mean_auc": 0.7369921584897956
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 200,
+        "mean_auc": 0.7391469496619063
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 300,
+        "mean_auc": 0.7411380076821925
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 400,
+        "mean_auc": 0.7385831337175562
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 600,
+        "mean_auc": 0.7340443089524736
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 800,
+        "mean_auc": 0.733126923312799
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 50,
+        "mean_auc": 0.7292741188994927
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 100,
+        "mean_auc": 0.7394648941110278
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 200,
+        "mean_auc": 0.7465528116353684
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 300,
+        "mean_auc": 0.7444183111187235
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 400,
+        "mean_auc": 0.7426591134640902
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 600,
+        "mean_auc": 0.7400631367095478
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 800,
+        "mean_auc": 0.7409101023592599
+      }
+    ],
+    "validation_safras": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "criterion": "mean AUC over validation safras"
+  },
+  "in_season": {
+    "params": {
+      "num_leaves": 127,
+      "min_child_samples": 2000
+    },
+    "rounds": 200,
+    "mean_auc": 0.7527472059094772,
+    "grid": [
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 50,
+        "mean_auc": 0.7345609810434068
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 100,
+        "mean_auc": 0.745826318150473
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 200,
+        "mean_auc": 0.7477475236923535
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 300,
+        "mean_auc": 0.7489347091827134
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 400,
+        "mean_auc": 0.7478321289626384
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 600,
+        "mean_auc": 0.7470380176304472
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 800,
+        "mean_auc": 0.7431023012777079
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 50,
+        "mean_auc": 0.7235212717836015
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 100,
+        "mean_auc": 0.7307336445114292
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 200,
+        "mean_auc": 0.7309000920107356
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 300,
+        "mean_auc": 0.7290145242650412
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 400,
+        "mean_auc": 0.7301182968834922
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 600,
+        "mean_auc": 0.7290792685277492
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 800,
+        "mean_auc": 0.7297682271382383
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 50,
+        "mean_auc": 0.7305041759349118
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 100,
+        "mean_auc": 0.7390153680299127
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 200,
+        "mean_auc": 0.7405446145817502
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 300,
+        "mean_auc": 0.7371369581664247
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 400,
+        "mean_auc": 0.7380814297364295
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 600,
+        "mean_auc": 0.7351933670431108
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 800,
+        "mean_auc": 0.7337881134071232
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 50,
+        "mean_auc": 0.733866175542492
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 100,
+        "mean_auc": 0.7504322055451794
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 200,
+        "mean_auc": 0.7527472059094772
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 300,
+        "mean_auc": 0.7490264994596962
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 400,
+        "mean_auc": 0.7467232592365254
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 600,
+        "mean_auc": 0.7467352630734425
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 800,
+        "mean_auc": 0.7447361623921074
+      }
+    ],
+    "validation_safras": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "criterion": "mean AUC over validation safras"
+  },
+  "pre_season": {
+    "params": {
+      "num_leaves": 15,
+      "min_child_samples": 2000
+    },
+    "rounds": 100,
+    "mean_auc": 0.697251564394848,
+    "grid": [
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 50,
+        "mean_auc": 0.6949395578478259
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 100,
+        "mean_auc": 0.697251564394848
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 200,
+        "mean_auc": 0.6942773867353735
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 300,
+        "mean_auc": 0.6966862705695205
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 400,
+        "mean_auc": 0.6956632322244654
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 600,
+        "mean_auc": 0.6932597729397313
+      },
+      {
+        "num_leaves": 15,
+        "min_child_samples": 2000,
+        "rounds": 800,
+        "mean_auc": 0.6929727357792848
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 50,
+        "mean_auc": 0.6814310482770626
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 100,
+        "mean_auc": 0.6910148887018186
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 200,
+        "mean_auc": 0.6916008479328704
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 300,
+        "mean_auc": 0.6904660984960636
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 400,
+        "mean_auc": 0.6913034890821235
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 600,
+        "mean_auc": 0.6905994076074291
+      },
+      {
+        "num_leaves": 31,
+        "min_child_samples": 500,
+        "rounds": 800,
+        "mean_auc": 0.6897897568747392
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 50,
+        "mean_auc": 0.679669021675249
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 100,
+        "mean_auc": 0.6853161488656545
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 200,
+        "mean_auc": 0.6864844354017254
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 300,
+        "mean_auc": 0.6868881035690644
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 400,
+        "mean_auc": 0.6858311555984107
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 600,
+        "mean_auc": 0.6811829282177175
+      },
+      {
+        "num_leaves": 63,
+        "min_child_samples": 1000,
+        "rounds": 800,
+        "mean_auc": 0.6787125846261446
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 50,
+        "mean_auc": 0.6878650981708124
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 100,
+        "mean_auc": 0.6919107335410074
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 200,
+        "mean_auc": 0.6937303525968694
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 300,
+        "mean_auc": 0.6952368561404816
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 400,
+        "mean_auc": 0.6924953965129809
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 600,
+        "mean_auc": 0.6887108299115823
+      },
+      {
+        "num_leaves": 127,
+        "min_child_samples": 2000,
+        "rounds": 800,
+        "mean_auc": 0.68572624356991
+      }
+    ],
+    "validation_safras": [
+      2009,
+      2010,
+      2011,
+      2012
+    ],
+    "criterion": "mean AUC over validation safras"
+  }
+}
