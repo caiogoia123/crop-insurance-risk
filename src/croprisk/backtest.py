@@ -54,6 +54,7 @@ EXPERIMENTS = [
     Experiment("lgbm_pre_season_gap1", "lgbm", "pre_season", gap=1, group="sensitivity"),
     Experiment("lgbm_in_season_gap1", "lgbm", "in_season", gap=1, group="sensitivity"),
     Experiment("lgbm_pre_season_roll8", "lgbm", "pre_season", window=8, group="sensitivity"),
+    Experiment("logreg_pre_season_gap1", "logreg", "pre_season", gap=1, group="sensitivity"),
 ]
 
 
@@ -92,7 +93,7 @@ TUNED_SETS = {
 
 def tune_all(df: pd.DataFrame) -> dict:
     out = {fs: tune(df, fs) for fs in sorted(set(TUNED_SETS.values()))}
-    TUNING_PATH.write_text(json.dumps(out, indent=2))
+    TUNING_PATH.write_text(json.dumps(out, indent=2), encoding="utf-8")
     return out
 
 
@@ -211,7 +212,7 @@ def main() -> None:
     config.ensure_dirs()
     df = load_features()
     if TUNING_PATH.exists() and not args.retune:
-        tuning = json.loads(TUNING_PATH.read_text())
+        tuning = json.loads(TUNING_PATH.read_text(encoding="utf-8"))
     else:
         tuning = tune_all(df)
     for k, v in tuning.items():

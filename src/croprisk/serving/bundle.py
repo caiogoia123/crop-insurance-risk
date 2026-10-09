@@ -38,7 +38,7 @@ TABLES = ["munis", "clim", "hist_muni", "hist_uf", "hist_cg", "hist_muni_all", "
 def current_dir(models_dir: Path) -> Path:
     """The bundle in use: models/CURRENT holds the version directory name."""
     pointer = models_dir / "CURRENT"
-    return models_dir / pointer.read_text().strip()
+    return models_dir / pointer.read_text(encoding="utf-8").strip()
 
 
 def load_model(path: Path, meta: dict):
@@ -65,7 +65,7 @@ class Bundle:
         path = Path(path)
         meta = json.loads((path / "meta.json").read_text(encoding="utf-8"))
         model = load_model(path, meta)
-        rate_calib = json.loads((path / "rate_calib.json").read_text())
+        rate_calib = json.loads((path / "rate_calib.json").read_text(encoding="utf-8"))
         tables = {t: pd.read_parquet(path / "tables" / f"{t}.parquet") for t in TABLES}
         b = cls(path, model, meta, rate_calib, tables)
         b._index()

@@ -131,7 +131,7 @@ def run() -> dict:
         ],
         "median_default_change_pp": float(t["delta_pp"].median()),
     }
-    (config.REPORTS / "scr_credit.json").write_text(json.dumps(summary, indent=2))
+    (config.REPORTS / "scr_credit.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     figure(m, cr, t, rho_w)
     log.info("SCR summary %s", summary)
     return summary

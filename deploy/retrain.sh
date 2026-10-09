@@ -12,7 +12,7 @@ echo "=== $(date -Is) retrain start"
 prev=$(cat "$BASE/models/CURRENT")
 
 docker run --rm --name crop-risk-retrain --network host \
-  --memory 6g --memory-swap 6g --cpus 1.5 \
+  --memory 6g --memory-swap 6g --cpus 1.5 --no-healthcheck \
   --log-driver json-file --log-opt max-size=10m --log-opt max-file=2 \
   -v "$BASE/data:/app/data" -v "$BASE/models:/app/models" \
   -v "$BASE/logs:/app/logs" -v "$BASE/reports:/app/reports" \
