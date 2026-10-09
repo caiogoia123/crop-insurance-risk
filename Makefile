@@ -2,7 +2,7 @@
 UV ?= uv
 PY := $(UV) run python
 
-.PHONY: setup data features train evaluate explain inmet test lint format api all
+.PHONY: setup data features train evaluate inmet scr test lint format api all
 
 setup:            ## install pinned dependencies (training extras + dev tools)
 	$(UV) sync --extra train
@@ -24,6 +24,9 @@ evaluate:         ## metrics tables and figures from the backtest predictions
 
 inmet:            ## INMET vs NASA POWER data-quality study
 	$(PY) -m croprisk.quality.inmet
+
+scr:              ## optional: PSR claim waves vs rural-credit default (BCB SCR.data)
+	$(PY) -m croprisk.analysis.scr_credit
 
 test:
 	$(UV) run pytest

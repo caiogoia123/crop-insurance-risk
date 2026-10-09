@@ -226,7 +226,7 @@ class LogRegModel:
             ]
         )
         self.pipe = Pipeline(
-            [("pre", pre), ("lr", LogisticRegression(C=C, max_iter=500, random_state=config.SEED))]
+            [("pre", pre), ("lr", LogisticRegression(C=C, max_iter=1000, random_state=config.SEED))]
         )
 
     @staticmethod

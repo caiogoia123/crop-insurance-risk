@@ -75,3 +75,110 @@ following second-crop corn and the winter wheat of the same season share a fold.
   that received the federal subsidy, so cancelled proposals are not expected to be
   there; the money-value checks above catch the odd ones.
 - Rare crops are grouped (`crop_group`, 14 groups) for calendars and features.
+
+## Features
+
+### D7. Climate source: NASA POWER per grid cell, not stations
+NASA POWER (MERRA-2 based) is gap-free and covers every municipality; INMET
+stations have long gaps (median station: 23% of days without a valid rain total in
+2021-2022, see the INMET section of the README). Each municipality seat is snapped
+to the nearest POWER node (0.5 x 0.625 degree); 1,304 cells cover Brazil, so there
+is one request per cell, never one per policy. Series are cached in `data/raw/power/`.
+
+### D8. Pre-season climate = 1981-2005 climatology of the critical window
+The reference period ends before the first policy (2006), so the "normal" climate
+of a location never contains the years being predicted (a unit test checks that
+changing post-2005 weather does not change the climatology). Features: mean, CV and
+10th percentile of window rain, drought frequency (rain < 70% of normal), typical
+longest dry spell, max 5-day rain, hot days (Tmax >= 34 C), frost-risk days
+(Tmin <= 3 C: a 2 m grid-cell air temperature rarely reaches 0 C even when there is
+frost on the ground), temperature and root-zone soil moisture.
+
+### D9. ENSO (ONI) at contract time is part of the pre-season block
+The El Nino / La Nina state is public and known when the contract is signed, and La
+Nina is the classic driver of droughts in southern Brazil. The value used is the
+latest 3-month ONI published (season end + 10 days) before the contract date.
+Caveat: NOAA revises ONI slightly when base periods are updated; this small
+look-ahead is accepted and documented.
+
+### D10. In-season = weather observed up to the middle of the critical window
+The early-warning model sees the weather from the window start to its midpoint
+(plus the 30 days before the window), as anomalies against the 1981-2005 normal of
+exactly the same calendar window. A second variant uses the whole window
+("end of window") as an upper reference; it is close to ex-post information and
+is not presented as an early warning.
+
+### D11. Portfolio history is computed as-of
+Loss rates by municipality x crop group, UF x crop group and crop group use only
+safras before the policy's safra (`s - 1 - gap`), with shrinkage toward the next
+level (50 pseudo-policies). Municipality cells with fewer than 10 policies fall
+back to the UF rate: this is both a variance rule and a privacy rule (no published
+aggregate is based on fewer than 10 policies). Before the first safra there is no
+history and the features are missing. A unit test caught an earlier version that
+filled them with an all-years mean (a small leak into 2006/07 training rows); fixed
+before any reported number.
+
+### D12. Money and yield are relative to recent market medians
+Soy sum insured per hectare grew from R$695 (2006) to R$5,476 (2023) in nominal
+terms. Raw R$ values put every recent policy outside the training range (score
+PSI 0.45 on the 2023/24 holdout in a first version). Sum insured per hectare and
+expected yield are divided by the median of the same crop and UF over the previous
+3 safras. These medians use contract fields only (no claims), so censored safras
+can also serve as a reference. Area stays in hectares (no inflation).
+
+### D13. The insurer's rate is not a feature of the main models
+`PE_TAXA` (and the premium and subsidy derived from it) is the benchmark, so the
+main models exclude it to keep the comparison fair. A separate variant adds it as
+a feature to measure whether the model's information complements the price.
+
+## Validation
+
+### D14. Walk-forward by safra, expanding window
+Test safras 2013/14 to 2023/24 (11 folds). For each, models are trained on all
+earlier safras (expanding window) and scored on the test safra. Expanding is the
+default because there are only 18 safras and weather-loss relations need as many
+drought years as possible; a rolling 8-safra window is reported as sensitivity.
+Random splits are never used: one drought hits thousands of policies in the same
+season.
+
+### D15. Label-maturity gap as sensitivity
+At the start of safra s, some claims of safra s-1 (e.g. winter wheat) are still
+open. The main backtest follows the usual "train on the past, test on the next
+safra"; a variant trains on safras <= s-2 and uses history features with the same
+gap, to show how much this matters.
+
+### D16. Hyperparameters chosen once, on safras 2009-2012, by mean AUC
+Selection happens on validation safras that precede every test safra. Single-year
+early stopping was tried first and rejected: the pre-season ranking inverts in
+drought years (validation AUC < 0.5 in 2011/12), and logloss is dominated by the
+year's base rate, which no contract-time feature can know, so early stopping
+stopped after 1-3 trees. The final protocol evaluates a small grid at fixed tree
+counts (50-800) and picks the best mean AUC over 2009-2012, separately per
+feature set.
+
+### D17. Comparing with the insurer's rate
+`PE_TAXA` is premium / sum insured: it prices frequency x severity + loadings,
+while the target is frequency. Ranking metrics (AUC, KS, Gini) use the raw rate,
+which is fair for "who is riskier". For Brier and calibration the rate is mapped to
+a probability by a logistic fit of log(rate) on the training folds. The business
+view is a double-lift table: policies sorted by model risk / rate-implied risk; if
+the model knows something the price does not, the loss ratio rises across those
+deciles.
+
+## Production
+
+### D18. The served model never sees the most recent matured safra
+Holdout H = latest matured safra. The served pre-season model is trained on
+safras <= H-1 and its holdout metrics are stored in the bundle. The monthly
+retrain trains a challenger the same way and scores champion and challenger on the
+same unseen H; the challenger replaces the champion only if AUC is not lower by
+more than 0.002 and Brier is not higher by more than 0.001. Cost: the served model
+lacks one safra (about 6% of the data). Benefit: the gate never compares on seen data.
+
+### D19. Small infrastructure footprint on the free VM
+Docker from the Ubuntu archive (`docker.io`), one image for API and retrain,
+built on the VM (arm64). API container: 127.0.0.1 only, 1 CPU, 1.5 GB, rotated
+logs, restart unless-stopped. Retrain container: low priority (nice 19, idle IO),
+1.5 CPU, 6 GB, monthly on day 3 at 04:30 UTC. Nginx adds `/crop-risk/` with a
+5 requests/s per-IP limit. The model bundle only contains aggregated tables
+(municipality level, n >= 10) and the LightGBM trees, never policy rows.
