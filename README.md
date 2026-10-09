@@ -84,7 +84,7 @@ paired differences with confidence intervals and sensitivity runs:
 
 - **Ranking across the whole portfolio: slightly, not reliably.** The served
   logistic model averages 0.646 vs 0.625 (+0.020, 95% CI -0.010 to +0.052, 7 of 11
-  seasons). The rate wins in 2017/18 and 2019/20. With a one-season gap between
+  seasons). The rate wins in the other four (2015/16, 2016/17, 2017/18 and 2019/20). With a one-season gap between
   training and scoring, which is closer to how a price is set before the last
   season's claims are closed, the advantage shrinks to +0.009 (0.635 vs 0.625,
   95% CI -0.024 to +0.042, still 7 of 11 seasons).
@@ -142,7 +142,7 @@ The models use NASA POWER (a gap-free gridded product). To show why, and what it
 costs, `croprisk.quality.inmet` compares it with the 95 INMET automatic stations in
 PR, SC and RS for 2021-2022:
 
-- **Gaps are the rule, not the exception.** The median station has no valid daily
+- **Gaps are common.** The median station has no valid daily
   rain total on 23% of days; 64 of 95 stations miss more than 10% of days.
 - **Zero rain or missing data?** A day counts as measured only with 22+ valid hourly
   values; a naive daily sum turns missing hours into 0 mm and would have created
