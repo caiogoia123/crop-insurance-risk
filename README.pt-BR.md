@@ -84,7 +84,7 @@ diferenças pareadas com intervalo de confiança e testes de sensibilidade:
 
 - **Ordenação da carteira inteira: um pouco, sem consistência.** A logística servida
   tem média 0,646 contra 0,625 (+0,020, IC 95% de -0,010 a +0,052, 7 de 11 safras). A
-  taxa ganha em 2017/18 e 2019/20. Com uma safra de intervalo entre treino e avaliação,
+  taxa ganha nas outras quatro (2015/16, 2016/17, 2017/18 e 2019/20). Com uma safra de intervalo entre treino e avaliação,
   mais próximo de como um preço é definido antes de os sinistros da última safra
   fecharem, a vantagem cai para +0,009 (0,635 contra 0,625, IC 95% de -0,024 a +0,042,
   ainda 7 de 11 safras).
@@ -141,7 +141,7 @@ Os modelos usam o NASA POWER (produto em grade, sem falhas). Para mostrar por qu
 que isso custa, `croprisk.quality.inmet` compara o POWER com as 95 estações automáticas
 do INMET no PR, SC e RS em 2021-2022:
 
-- **Falha é a regra, não a exceção.** A estação mediana não tem total diário de chuva
+- **As falhas são frequentes.** A estação mediana não tem total diário de chuva
   válido em 23% dos dias; 64 das 95 estações perdem mais de 10% dos dias.
 - **Chuva zero ou falta de medição?** Um dia só conta como medido com 22 ou mais
   valores horários válidos; uma soma diária ingênua transforma horas faltantes em 0 mm
