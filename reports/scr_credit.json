@@ -1,0 +1,63 @@
+{
+  "uf_safra_cells": 100,
+  "min_policies_per_cell": 1000,
+  "spearman_claims_vs_default_change": {
+    "rho": -0.12057605760576057,
+    "p_value": 0.23210009223420092
+  },
+  "spearman_within_uf": {
+    "rho": -0.1225202520252025,
+    "p_value": 0.22460270215357103
+  },
+  "worst_claim_safras": [
+    {
+      "uf": "PR",
+      "safra": "2021/22",
+      "claim_rate": 0.451,
+      "default_change_pp": 0.21
+    },
+    {
+      "uf": "GO",
+      "safra": "2015/16",
+      "claim_rate": 0.45,
+      "default_change_pp": -0.58
+    },
+    {
+      "uf": "MS",
+      "safra": "2021/22",
+      "claim_rate": 0.399,
+      "default_change_pp": 0.88
+    },
+    {
+      "uf": "RS",
+      "safra": "2021/22",
+      "claim_rate": 0.389,
+      "default_change_pp": 0.05
+    },
+    {
+      "uf": "RS",
+      "safra": "2019/20",
+      "claim_rate": 0.331,
+      "default_change_pp": -0.75
+    },
+    {
+      "uf": "RS",
+      "safra": "2018/19",
+      "claim_rate": 0.329,
+      "default_change_pp": -0.24
+    },
+    {
+      "uf": "PR",
+      "safra": "2020/21",
+      "claim_rate": 0.288,
+      "default_change_pp": -0.64
+    },
+    {
+      "uf": "RS",
+      "safra": "2022/23",
+      "claim_rate": 0.281,
+      "default_change_pp": 0.31
+    }
+  ],
+  "median_default_change_pp": 0.14277512513649024
+}
