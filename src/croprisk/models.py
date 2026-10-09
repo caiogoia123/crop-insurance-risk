@@ -175,9 +175,14 @@ class LGBModel:
                 reference=dtrain,
             )
             valid_sets = [dvalid]
-            callbacks = [lgb.early_stopping(50, verbose=False)]
+            callbacks = [lgb.early_stopping(100, verbose=False)]
+        params = dict(self.params)
+        if valid is not None:
+            # Early stopping on AUC, not logloss: a drought year shifts the base rate,
+            # which dominates logloss and stops training after a handful of rounds.
+            params["metric"] = "auc"
         self.booster = lgb.train(
-            self.params,
+            params,
             dtrain,
             num_boost_round=self.rounds,
             valid_sets=valid_sets,

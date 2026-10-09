@@ -1,0 +1,12 @@
+[Unit]
+Description=crop-risk monthly retrain (champion/challenger)
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/crop-risk/app/deploy/retrain.sh
+Nice=19
+IOSchedulingClass=idle
+TimeoutStartSec=4h

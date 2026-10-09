@@ -1,0 +1,13 @@
+.git
+.github
+.venv
+data
+models
+mlruns
+reports
+docs
+tests
+deploy
+**/__pycache__
+*.parquet
+PROMPT.md

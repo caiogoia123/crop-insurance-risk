@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crop Claim Risk</title>
+<style>
+  :root {
+    --bg: #f7f6f2; --fg: #1b1b18; --muted: #6b6a63; --line: #d9d7cf; --accent: #2d5a3d; --warn: #9a3b1d;
+    --field: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #151513; --fg: #ecebe6; --muted: #9c9a92; --line: #33322d; --accent: #8cc49b; --warn: #e48b6a; --field: #1d1d1a; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; font-weight: 600; }
+  p.lead { color: var(--muted); margin: 0 0 24px; max-width: 70ch; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  fieldset { border: 0; border-top: 1px solid var(--line); padding: 12px 0 0; margin: 0 0 12px; }
+  legend { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding-right: 8px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 8px 0 2px; }
+  input, select { width: 100%; padding: 7px 8px; font: inherit; color: var(--fg); background: var(--field);
+                  border: 1px solid var(--line); border-radius: 2px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  button { margin-top: 16px; padding: 9px 18px; font: inherit; font-weight: 600; color: var(--bg);
+           background: var(--fg); border: 0; border-radius: 2px; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: wait; }
+  .num { font-variant-numeric: tabular-nums; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
+  .big { font-size: 44px; line-height: 1; margin: 8px 0; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .bar { display: grid; grid-template-columns: repeat(10, 1fr); gap: 2px; margin: 12px 0 4px; }
+  .bar span { height: 10px; background: var(--line); }
+  .bar span.on { background: var(--accent); }
+  .bar span.on.hi { background: var(--warn); }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+  th, td { text-align: left; padding: 5px 4px; border-bottom: 1px solid var(--line); }
+  th { font-weight: 500; color: var(--muted); }
+  td.r, th.r { text-align: right; }
+  .err { color: var(--warn); white-space: pre-wrap; }
+  footer { margin-top: 40px; border-top: 1px solid var(--line); padding-top: 12px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Crop insurance claim risk</h1>
+  <p class="lead">Probability that a subsidized crop insurance policy (PSR, Brazil) is indemnified, estimated at
+    contract time from the contract, the municipality's loss history and the 1981-2005 climate of the crop's critical
+    window. Research project built on public data; not an underwriting tool.</p>
+
+  <div class="grid">
+    <form id="f">
+      <fieldset><legend>Location and crop</legend>
+        <div class="row">
+          <div><label for="uf">State (UF)</label><select id="uf" required></select></div>
+          <div><label for="muni">Municipality</label><select id="muni" required></select></div>
+        </div>
+        <div class="row">
+          <div><label for="crop">Crop</label><select id="crop" required></select></div>
+          <div><label for="date">Contract date</label><input id="date" type="date" required></div>
+        </div>
+      </fieldset>
+      <fieldset><legend>Contract</legend>
+        <div class="row">
+          <div><label for="area">Area (ha)</label><input id="area" type="number" step="any" min="0.01" value="120" required></div>
+          <div><label for="si">Sum insured (R$)</label><input id="si" type="number" step="any" min="1" value="350000" required></div>
+        </div>
+        <div class="row">
+          <div><label for="cov">Coverage level</label><input id="cov" type="number" step="0.01" min="0.05" max="1" value="0.70"></div>
+          <div><label for="pc">Product</label><select id="pc"><option>PRODUTIVIDADE</option><option>CUSTEIO</option></select></div>
+        </div>
+        <div class="row">
+          <div><label for="ye">Expected yield (kg/ha, optional)</label><input id="ye" type="number" step="any" min="1" value="3600"></div>
+          <div><label for="yi">Insured yield (kg/ha, optional)</label><input id="yi" type="number" step="any" min="1" value="2520"></div>
+        </div>
+        <div class="row">
+          <div><label for="ins">Insurer (optional)</label><select id="ins"><option value="">(not informed)</option></select></div>
+          <div><label for="rate">Rate charged (optional, e.g. 0.065)</label><input id="rate" type="number" step="0.0001" min="0.0001" max="0.99"></div>
+        </div>
+      </fieldset>
+      <button id="go" type="submit">Estimate risk</button>
+    </form>
+
+    <section id="out" aria-live="polite">
+      <p class="muted">Fill in the contract and press <em>Estimate risk</em>.</p>
+    </section>
+  </div>
+
+  <footer class="muted">
+    <span id="ver"></span> · <a href="docs">API docs</a> · <a href="model-info">model-info</a> ·
+    <a href="https://github.com/caiogoia123/crop-insurance-risk">source and methodology</a>
+  </footer>
+</main>
+<script>
+const LABELS = {
+  hist_muni_cg_rate: "Municipality loss history (crop group)", hist_uf_cg_rate: "State loss history (crop group)",
+  hist_cg_rate: "Crop group loss history", hist_muni_rate: "Municipality loss history (all crops)",
+  hist_muni_cg_n: "Policies in municipality history (log)", hist_uf_cg_n: "Policies in state history (log)",
+  crop: "Crop", crop_group: "Crop group", uf: "State", region: "Region", insurer: "Insurer", product_class: "Product",
+  log_sum_insured: "Sum insured (log)", log_area: "Area (log)", log_si_per_ha: "Sum insured per ha (log)",
+  coverage_level: "Coverage level", yield_expected: "Expected yield", yield_insured_ratio: "Insured / expected yield",
+  yield_rel: "Expected yield vs state median", contract_month: "Contract month", lead_days: "Days to critical window",
+  oni: "ENSO index (ONI) at contract", oni_change_3m: "ONI change, 3 months",
+  clim_prec_mean: "Normal rain in window", clim_prec_cv: "Rain variability in window", clim_prec_p10_ratio: "Dry-year rain / normal",
+  clim_drought_freq: "Drought frequency 1981-2005", clim_cdd: "Typical longest dry spell", clim_max5d: "Typical max 5-day rain",
+  clim_hot_days: "Typical hot days (>=34C)", clim_frost_days: "Typical frost-risk days", clim_frost_freq: "Years with frost risk",
+  clim_tmax: "Normal max temperature", clim_tmin: "Normal min temperature", clim_gwet: "Normal root-zone soil moisture",
+  clim_gwet_min: "Normal minimum soil moisture",
+};
+const $ = (id) => document.getElementById(id);
+const fmt = (x, d = 3) => (x === null || x === undefined) ? "-" : (typeof x === "number" ? x.toFixed(d) : x);
+
+async function getJSON(url, opts) {
+  const r = await fetch(url, opts);
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(JSON.stringify(body.detail || body, null, 1));
+  return body;
+}
+function fill(sel, items, val = (x) => x, txt = (x) => x) {
+  sel.innerHTML = "";
+  for (const it of items) { const o = document.createElement("option"); o.value = val(it); o.textContent = txt(it); sel.appendChild(o); }
+}
+async function loadMunis() {
+  const list = await getJSON("meta/municipalities?uf=" + $("uf").value);
+  fill($("muni"), list, (m) => m.ibge_code, (m) => m.name);
+  const pref = { PR: 4104808, MT: 5107602, RS: 4316907, GO: 5211909 }[$("uf").value];
+  if (pref) $("muni").value = pref;
+}
+async function init() {
+  $("date").value = new Date().toISOString().slice(0, 10);
+  try {
+    const [opt, health] = await Promise.all([getJSON("meta/options"), getJSON("health")]);
+    fill($("uf"), opt.ufs); $("uf").value = "PR";
+    fill($("crop"), opt.crops); $("crop").value = "Soja";
+    for (const i of opt.insurers) { const o = document.createElement("option"); o.value = i; o.textContent = i; $("ins").appendChild(o); }
+    $("ver").textContent = "model " + health.model_version;
+    await loadMunis();
+  } catch (e) { $("out").innerHTML = `<p class="err">Could not reach the API: ${e.message}</p>`; }
+}
+$("uf").addEventListener("change", loadMunis);
+$("f").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const num = (id) => $(id).value === "" ? null : Number($(id).value);
+  const req = {
+    crop: $("crop").value, ibge_code: Number($("muni").value), contract_date: $("date").value,
+    coverage_level: num("cov"), area_ha: num("area"), sum_insured: num("si"),
+    yield_expected: num("ye"), yield_insured: num("yi"),
+    insurer: $("ins").value || null, product_class: $("pc").value, rate: num("rate"),
+  };
+  $("go").disabled = true;
+  try {
+    const r = await getJSON("predict", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(req) });
+    const bar = Array.from({ length: 10 }, (_, i) => `<span class="${i < r.risk_decile ? "on" : ""} ${r.risk_decile >= 8 ? "hi" : ""}"></span>`).join("");
+    const rows = r.top_factors.map((f) => `<tr><td>${LABELS[f.feature] || f.feature}</td><td class="r num">${fmt(f.value)}</td>
+      <td class="r num">${f.contribution_logit > 0 ? "+" : ""}${f.contribution_logit.toFixed(3)}</td></tr>`).join("");
+    $("out").innerHTML = `
+      <div class="muted">Probability of indemnity</div>
+      <div class="big num">${(100 * r.probability).toFixed(1)}%</div>
+      <div class="bar">${bar}</div>
+      <div class="muted">Risk decile ${r.risk_decile} of 10 (vs. policies of the ${"holdout"} safra; their claim rate was ${(100 * r.holdout_claim_rate).toFixed(1)}%).</div>
+      ${r.rate_implied_probability !== undefined ? `<p>Probability implied by the rate charged: <span class="num">${(100 * r.rate_implied_probability).toFixed(1)}%</span></p>` : ""}
+      <p class="muted">${r.municipality} (${r.uf}) · crop group <b>${r.crop_group}</b> · safra ${r.safra} · critical window
+        ${r.critical_window.start} to ${r.critical_window.end}</p>
+      <table><thead><tr><th>Main factors (SHAP)</th><th class="r">value</th><th class="r">effect (log-odds)</th></tr></thead><tbody>${rows}</tbody></table>
+      <p class="muted">Pre-season estimate: it does not know this season's weather. In drought years the realized ranking can differ a lot.</p>`;
+  } catch (e) { $("out").innerHTML = `<p class="err">${e.message}</p>`; }
+  finally { $("go").disabled = false; }
+});
+init();
+</script>
+</body>
+</html>

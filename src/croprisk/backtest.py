@@ -21,7 +21,7 @@ from croprisk.features.build import FEATURES_PATH
 
 log = logging.getLogger(__name__)
 
-TUNE_SAFRAS = [2010, 2011, 2012]
+TUNE_SAFRAS = [2009, 2010, 2011, 2012]
 TEST_SAFRAS = list(range(2013, 2024))  # 2013/14 ... 2023/24
 OOF_PATH = config.PROCESSED / "oof.parquet"
 FOLD_METRICS_PATH = config.REPORTS / "fold_metrics.csv"
@@ -80,56 +80,73 @@ def make_model(exp: Experiment, params: dict | None = None, rounds: int | None =
     return models.LGBModel(fs, params=params, rounds=rounds or models.LGB_ROUNDS)
 
 
-def tune(df: pd.DataFrame) -> dict:
-    """Pick LightGBM capacity and number of rounds on safras 2010-2012 only."""
+TUNED_SETS = {
+    "contract_only": "contract",
+    "contract": "contract",
+    "pre_season": "pre_season",
+    "pre_season_rate": "pre_season",
+    "in_season": "in_season",
+    "end_of_window": "end_of_window",
+}
+
+
+def tune_all(df: pd.DataFrame) -> dict:
+    out = {fs: tune(df, fs) for fs in sorted(set(TUNED_SETS.values()))}
+    TUNING_PATH.write_text(json.dumps(out, indent=2))
+    return out
+
+
+def tune(df: pd.DataFrame, fs_name: str = "pre_season") -> dict:
+    """Pick LightGBM capacity and number of rounds on safras 2009-2012 only.
+
+    Selection by mean validation AUC over several safras at fixed checkpoints (no
+    early stopping). Single-year early stopping is meaningless here: the pre-season
+    ranking can invert in a drought year (AUC < 0.5 in 2011/12), and logloss is
+    dominated by the year's base rate, which no contract feature can know.
+    """
     grid = [
+        {"num_leaves": 15, "min_child_samples": 2000},
         {"num_leaves": 31, "min_child_samples": 500},
-        {"num_leaves": 63, "min_child_samples": 500},
-        {"num_leaves": 127, "min_child_samples": 1000},
-        {"num_leaves": 255, "min_child_samples": 2000},
+        {"num_leaves": 63, "min_child_samples": 1000},
+        {"num_leaves": 127, "min_child_samples": 2000},
     ]
-    fs = models.FEATURE_SETS["pre_season"]
+    checkpoints = [50, 100, 200, 300, 400, 600, 800]
+    fs = models.FEATURE_SETS[fs_name]
     results = []
     for params in grid:
-        losses, rounds, aucs = [], [], []
+        curves = []
         for v in TUNE_SAFRAS:
             tr = df[df["safra_year"] < v]
             va = df[df["safra_year"] == v]
-            m = models.LGBModel(fs, params=params, rounds=3000).fit(
-                tr, tr["y"].to_numpy(), valid=(va, va["y"].to_numpy())
+            m = models.LGBModel(fs, params=params, rounds=max(checkpoints)).fit(
+                tr, tr["y"].to_numpy()
             )
-            p = m.predict(va)
-            met = metrics.binary_metrics(va["y"], p)
-            losses.append(met["logloss"])
-            aucs.append(met["auc"])
-            rounds.append(m.booster.best_iteration)
-        results.append(
-            {
-                **params,
-                "logloss": float(np.mean(losses)),
-                "auc": float(np.mean(aucs)),
-                "best_rounds": rounds,
-            }
-        )
+            curves.append(
+                [
+                    metrics.binary_metrics(
+                        va["y"], m.booster.predict(va[fs.columns], num_iteration=k)
+                    )["auc"]
+                    for k in checkpoints
+                ]
+            )
+        mean_auc = np.mean(curves, axis=0)
+        for k, a in zip(checkpoints, mean_auc, strict=True):
+            results.append({**params, "rounds": k, "mean_auc": float(a)})
         log.info(
-            "tune %s -> logloss %.4f auc %.4f rounds %s",
-            params,
-            np.mean(losses),
-            np.mean(aucs),
-            rounds,
+            "tune %s %s -> mean auc by rounds %s", fs_name, params, np.round(mean_auc, 4).tolist()
         )
-    best = min(results, key=lambda r: r["logloss"])
+    best = max(results, key=lambda r: r["mean_auc"])
     chosen = {
         "params": {
             "num_leaves": best["num_leaves"],
             "min_child_samples": best["min_child_samples"],
         },
-        # training sets in the test folds are larger than in tuning: 20% more rounds
-        "rounds": int(np.median(best["best_rounds"]) * 1.2),
+        "rounds": best["rounds"],
+        "mean_auc": best["mean_auc"],
         "grid": results,
         "validation_safras": TUNE_SAFRAS,
+        "criterion": "mean AUC over validation safras",
     }
-    TUNING_PATH.write_text(json.dumps(chosen, indent=2))
     return chosen
 
 
@@ -148,6 +165,7 @@ def run(experiments: list[Experiment], df: pd.DataFrame, tuning: dict) -> None:
         t_exp = time.time()
         preds = pd.Series(np.nan, index=test.index)
         fold_rows = [r for r in fold_rows if r["experiment"] != exp.name]
+        tun = tuning[TUNED_SETS[exp.feature_set]] if exp.algo == "lgbm" else None
         with tracking.run(exp.name, algo=exp.algo, group=exp.group):
             tracking.log_params(
                 {
@@ -155,14 +173,16 @@ def run(experiments: list[Experiment], df: pd.DataFrame, tuning: dict) -> None:
                     "feature_set": exp.feature_set,
                     "gap": exp.gap,
                     "window": exp.window,
-                    **(tuning["params"] if exp.algo == "lgbm" else {}),
-                    "rounds": tuning["rounds"] if exp.algo == "lgbm" else None,
+                    **(tun["params"] if tun else {}),
+                    "rounds": tun["rounds"] if tun else None,
                 }
             )
             for s in TEST_SAFRAS:
                 tr = df[train_mask(df, s, exp.gap, exp.window)]
                 te = test[test["safra_year"] == s]
-                model = make_model(exp, tuning["params"], tuning["rounds"])
+                model = make_model(
+                    exp, tun["params"] if tun else None, tun["rounds"] if tun else None
+                )
                 model.fit(tr, tr["y"].to_numpy())
                 p = model.predict(te)
                 p_tr = model.predict(tr.sample(min(len(tr), 200_000), random_state=config.SEED))
@@ -190,12 +210,14 @@ def main() -> None:
     args = ap.parse_args()
     config.ensure_dirs()
     df = load_features()
-    tuning = (
-        json.loads(TUNING_PATH.read_text())
-        if TUNING_PATH.exists() and not args.retune
-        else tune(df)
-    )
-    log.info("tuning: %s rounds=%s", tuning["params"], tuning["rounds"])
+    if TUNING_PATH.exists() and not args.retune:
+        tuning = json.loads(TUNING_PATH.read_text())
+    else:
+        tuning = tune_all(df)
+    for k, v in tuning.items():
+        log.info(
+            "tuning %s: %s rounds=%s mean_auc=%.4f", k, v["params"], v["rounds"], v["mean_auc"]
+        )
     exps = [e for e in EXPERIMENTS if not args.only or e.name in args.only]
     run(exps, df, tuning)
 

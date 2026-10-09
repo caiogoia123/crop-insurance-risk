@@ -132,6 +132,52 @@ def climatology(
     return res
 
 
+def clim_features(cl: pd.DataFrame) -> pd.DataFrame:
+    """Pre-season features from climatology rows (output of `climatology`)."""
+    return pd.DataFrame(
+        {
+            "clim_prec_mean": cl["prec_sum_mean"],
+            "clim_prec_cv": cl["prec_sum_std"] / cl["prec_sum_mean"],
+            "clim_prec_p10_ratio": cl["prec_sum_p10"] / cl["prec_sum_mean"],
+            "clim_drought_freq": cl["drought_freq"],
+            "clim_cdd": cl["cdd_mean"],
+            "clim_max5d": cl["prec_max5d_mean"],
+            "clim_hot_days": cl["hot_days_mean"],
+            "clim_frost_days": cl["frost_days_mean"],
+            "clim_frost_freq": cl["frost_freq"],
+            "clim_tmax": cl["tmax_mean_mean"],
+            "clim_tmin": cl["tmin_mean_mean"],
+            "clim_gwet": cl["gwet_mean_mean"],
+            "clim_gwet_min": cl["gwet_min_mean"],
+        },
+        index=cl.index,
+    )
+
+
+def climatology_table(cell_ids, keys: list[tuple[int, int, int]]) -> pd.DataFrame:
+    """Pre-season features for every (cell, window start month/day, length).
+
+    Used by the API, so a new contract gets exactly the features the model was
+    trained with, without shipping the daily series.
+    """
+    rows = []
+    for i, cid in enumerate(cell_ids, 1):
+        try:
+            arrs = load_arrays(cid)
+        except FileNotFoundError:
+            continue
+        cl = pd.DataFrame([climatology(arrs, m, d, 0, length) for m, d, length in keys])
+        f = clim_features(cl)
+        f.insert(0, "wlen", [k[2] for k in keys])
+        f.insert(0, "ws_day", [k[1] for k in keys])
+        f.insert(0, "ws_month", [k[0] for k in keys])
+        f.insert(0, "cell_id", cid)
+        rows.append(f)
+        if i % 200 == 0:
+            log.info("climatology table: %d cells", i)
+    return pd.concat(rows, ignore_index=True)
+
+
 def cell_features(
     arrs: dict[str, np.ndarray], wins: pd.DataFrame, horizons: list[float]
 ) -> pd.DataFrame:
@@ -179,19 +225,8 @@ def cell_features(
             obs.loc[wins.index[sel], STATS] = st.to_numpy()
         if name == "full":
             # pre-season climatology of the full critical window
-            out["clim_prec_mean"] = cl["prec_sum_mean"]
-            out["clim_prec_cv"] = cl["prec_sum_std"] / cl["prec_sum_mean"]
-            out["clim_prec_p10_ratio"] = cl["prec_sum_p10"] / cl["prec_sum_mean"]
-            out["clim_drought_freq"] = cl["drought_freq"]
-            out["clim_cdd"] = cl["cdd_mean"]
-            out["clim_max5d"] = cl["prec_max5d_mean"]
-            out["clim_hot_days"] = cl["hot_days_mean"]
-            out["clim_frost_days"] = cl["frost_days_mean"]
-            out["clim_frost_freq"] = cl["frost_freq"]
-            out["clim_tmax"] = cl["tmax_mean_mean"]
-            out["clim_tmin"] = cl["tmin_mean_mean"]
-            out["clim_gwet"] = cl["gwet_mean_mean"]
-            out["clim_gwet_min"] = cl["gwet_min_mean"]
+            for c, v in clim_features(cl).items():
+                out[c] = v
         prefix = "ante" if name == "ante" else f"obs_{name}"
         out[f"{prefix}_prec_anom"] = obs["prec_sum"] / cl["prec_sum_mean"].clip(lower=1.0) - 1
         out[f"{prefix}_gwet_anom"] = obs["gwet_mean"] - cl["gwet_mean_mean"]
