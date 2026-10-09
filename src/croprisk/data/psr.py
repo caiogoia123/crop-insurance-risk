@@ -199,7 +199,9 @@ def download_all(force: bool = False) -> list[Path]:
     """Stream every CSV resource into data/interim/psr_<id>.parquet (skips unchanged files)."""
     config.ensure_dirs()
     manifest_path = config.RAW / "psr_manifest.json"
-    manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+    manifest = (
+        json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
+    )
     paths = []
     for res in list_resources():
         dest = config.INTERIM / f"psr_{res['id'][:8]}.parquet"
@@ -217,7 +219,9 @@ def download_all(force: bool = False) -> list[Path]:
             text = io.TextIOWrapper(raw, encoding="latin1", newline="")
             n = ingest_stream(text, res["name"], dest)
         manifest[res["id"]] = {**res, "rows": n}
-        manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False))
+        manifest_path.write_text(
+            json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
         log.info("%s: %d rows -> %s", res["name"], n, dest.name)
         paths.append(dest)
     return paths

@@ -288,7 +288,9 @@ def run() -> dict:
         },
     }
     config.REPORTS.mkdir(parents=True, exist_ok=True)
-    (config.REPORTS / "inmet_quality.json").write_text(json.dumps(summary, indent=2))
+    (config.REPORTS / "inmet_quality.json").write_text(
+        json.dumps(summary, indent=2), encoding="utf-8"
+    )
     st.round(3).to_csv(config.REPORTS / "inmet_stations.csv", index=False)
     figures(st, prec, naive, filled, pw_prec, stations)
     log.info("INMET summary: %s", json.dumps(summary, indent=1))

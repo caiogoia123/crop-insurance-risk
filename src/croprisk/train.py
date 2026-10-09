@@ -57,7 +57,7 @@ def tuning_for(fs: str) -> dict:
     if env:
         return json.loads(env)
     if TUNING_PATH.exists():
-        return json.loads(TUNING_PATH.read_text())[TUNED_SETS[fs]]
+        return json.loads(TUNING_PATH.read_text(encoding="utf-8"))[TUNED_SETS[fs]]
     return DEFAULT_TUNING
 
 
@@ -147,7 +147,8 @@ def write_bundle(
         joblib.dump(model, out / "model.joblib")
     lr = res["rate_model"].lr
     (out / "rate_calib.json").write_text(
-        json.dumps({"intercept": float(lr.intercept_[0]), "coef": float(lr.coef_[0][0])})
+        json.dumps({"intercept": float(lr.intercept_[0]), "coef": float(lr.coef_[0][0])}),
+        encoding="utf-8",
     )
     for name, t in tables.items():
         t.to_parquet(out / "tables" / f"{name}.parquet", index=False)
@@ -162,8 +163,14 @@ def write_bundle(
         for c, g in calendar.CROP_GROUP.items()
     }
     manifest_path = config.RAW / "psr_manifest.json"
-    manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
-    cleaning = json.loads(dataset.REPORT_PATH.read_text()) if dataset.REPORT_PATH.exists() else {}
+    manifest = (
+        json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
+    )
+    cleaning = (
+        json.loads(dataset.REPORT_PATH.read_text(encoding="utf-8"))
+        if dataset.REPORT_PATH.exists()
+        else {}
+    )
     meta = {
         "version": version,
         "created_at": created.isoformat(timespec="seconds"),
@@ -216,7 +223,7 @@ def shares(train: pd.DataFrame, col: str, keep=None, top: int = 12) -> dict[str,
 
 
 def promote(bundle_dir: Path) -> None:
-    (bundle_dir.parent / "CURRENT").write_text(bundle_dir.name)
+    (bundle_dir.parent / "CURRENT").write_text(bundle_dir.name, encoding="utf-8")
 
 
 def main() -> None:

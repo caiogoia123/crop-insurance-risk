@@ -146,7 +146,7 @@ def main() -> None:
     df, report, ref = build()
     df.to_parquet(POLICIES_PATH, index=False)
     ref.to_parquet(REFERENCE_PATH, index=False)
-    REPORT_PATH.write_text(json.dumps(report, indent=2, ensure_ascii=False))
+    REPORT_PATH.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     log.info("policies: %d rows, claim rate %.3f", len(df), df["y"].mean())
 
 

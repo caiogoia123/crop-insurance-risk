@@ -78,7 +78,7 @@ for _p, _w in [("obs_h50_", "first half of window"), ("obs_full_", "whole window
 
 
 def shap_values(fs_name: str, df: pd.DataFrame, test_safra: int):
-    tuning = json.loads(TUNING_PATH.read_text())[TUNED_SETS[fs_name]]
+    tuning = json.loads(TUNING_PATH.read_text(encoding="utf-8"))[TUNED_SETS[fs_name]]
     fs = models.FEATURE_SETS[fs_name]
     tr = df[df["safra_year"] <= test_safra - 1]
     te = df[df["safra_year"] == test_safra].sample(N_EXPLAIN, random_state=config.SEED)
@@ -145,7 +145,7 @@ def main() -> None:
         share = {g: float(imp[cols].sum() / imp.sum()) for g, cols in groups.items() if cols}
         out[fs_name] = {"top10": imp.head(10).round(4).to_dict(), "share_by_block": share}
         log.info("%s SHAP share by block: %s", fs_name, share)
-    (config.REPORTS / "shap_summary.json").write_text(json.dumps(out, indent=2))
+    (config.REPORTS / "shap_summary.json").write_text(json.dumps(out, indent=2), encoding="utf-8")
     if tracking.setup("crop-insurance-risk-evaluation"):
         with tracking.run("explain"):
             for p in config.FIGURES.glob("shap_*.png"):

@@ -57,7 +57,7 @@ def score_champion(champion: Bundle, hold: pd.DataFrame) -> tuple[dict, pd.Serie
 
 
 def cleanup_bundles(models_dir, keep: int = KEEP_BUNDLES) -> None:
-    current = (models_dir / "CURRENT").read_text().strip()
+    current = (models_dir / "CURRENT").read_text(encoding="utf-8").strip()
     dirs = sorted([d for d in models_dir.iterdir() if d.is_dir()], key=lambda d: d.stat().st_mtime)
     for d in dirs[:-keep]:
         if d.name != current:

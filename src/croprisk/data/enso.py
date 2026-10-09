@@ -22,13 +22,13 @@ def download(force: bool = False) -> pd.DataFrame:
     if force or not ONI_PATH.exists():
         r = requests.get(ONI_URL, timeout=60)
         r.raise_for_status()
-        ONI_PATH.write_text(r.text)
+        ONI_PATH.write_text(r.text, encoding="utf-8")
     return load()
 
 
 def load(text: str | None = None) -> pd.DataFrame:
     """One row per 3-month season with the date its value becomes available."""
-    text = ONI_PATH.read_text() if text is None else text
+    text = ONI_PATH.read_text(encoding="utf-8") if text is None else text
     df = pd.read_csv(io.StringIO(text), sep=r"\s+")
     df.columns = [c.upper() for c in df.columns]
     k = df["SEAS"].map({s: i for i, s in enumerate(SEASONS)})

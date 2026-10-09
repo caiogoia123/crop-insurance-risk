@@ -205,6 +205,23 @@
   ],
   "sensitivity": [
     {
+      "experiment": "logreg_pre_season",
+      "model": "Logistic, pre-season (+ climatology)",
+      "auc_mean": 0.646,
+      "auc_sd": 0.0581,
+      "auc_min": 0.5615,
+      "ks_mean": 0.2479,
+      "gini_mean": 0.292,
+      "pr_auc_mean": 0.245,
+      "brier_mean": 0.1398,
+      "brier_skill_mean": -0.0127,
+      "auc_within_crop": 0.5932,
+      "pooled_auc": 0.6513,
+      "safras_beating_rate": 7,
+      "n_safras": 11,
+      "psi_score_mean": 0.2074
+    },
+    {
       "experiment": "lgbm_contract",
       "model": "LightGBM, contract + history",
       "auc_mean": 0.6379,
@@ -322,6 +339,23 @@
       "safras_beating_rate": 7,
       "n_safras": 11,
       "psi_score_mean": 0.5904
+    },
+    {
+      "experiment": "logreg_pre_season_gap1",
+      "model": "Logistic pre-season (served), 1-safra gap",
+      "auc_mean": 0.6346,
+      "auc_sd": 0.0697,
+      "auc_min": 0.5066,
+      "ks_mean": 0.2236,
+      "gini_mean": 0.2692,
+      "pr_auc_mean": 0.2425,
+      "brier_mean": 0.142,
+      "brier_skill_mean": -0.0273,
+      "auc_within_crop": 0.5826,
+      "pooled_auc": 0.6377,
+      "safras_beating_rate": 7,
+      "n_safras": 11,
+      "psi_score_mean": 0.4186
     }
   ],
   "deltas": {
@@ -398,6 +432,181 @@
         "2021": -0.1194,
         "2022": 0.0005,
         "2023": 0.0284
+      }
+    },
+    "served_logreg_vs_insurer_rate": {
+      "a": "logreg_pre_season",
+      "b": "insurer_rate",
+      "metric": "auc",
+      "mean_delta": 0.020524909934684657,
+      "ci95": [
+        -0.010427344728965997,
+        0.05147716459833531
+      ],
+      "safras_a_better": 7,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.0556,
+        "2014": 0.0356,
+        "2015": -0.0145,
+        "2016": -0.0022,
+        "2017": -0.0703,
+        "2018": 0.0754,
+        "2019": -0.0251,
+        "2020": 0.0332,
+        "2021": 0.0866,
+        "2022": 0.0327,
+        "2023": 0.0189
+      }
+    },
+    "logreg_climatology_vs_contract": {
+      "a": "logreg_pre_season",
+      "b": "logreg_contract",
+      "metric": "auc",
+      "mean_delta": 0.0015283057758631792,
+      "ci95": [
+        -0.007750737689095227,
+        0.010807349240821586
+      ],
+      "safras_a_better": 6,
+      "n": 11,
+      "by_safra": {
+        "2013": -0.0069,
+        "2014": 0.0074,
+        "2015": 0.0066,
+        "2016": 0.007,
+        "2017": -0.0201,
+        "2018": 0.0108,
+        "2019": -0.0045,
+        "2020": 0.011,
+        "2021": -0.0137,
+        "2022": 0.0284,
+        "2023": -0.009
+      }
+    },
+    "logreg_in_season_vs_pre_season": {
+      "a": "logreg_in_season",
+      "b": "logreg_pre_season",
+      "metric": "auc",
+      "mean_delta": 0.036841436489126085,
+      "ci95": [
+        -0.003527595289574824,
+        0.07721046826782699
+      ],
+      "safras_a_better": 8,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.0179,
+        "2014": 0.0033,
+        "2015": 0.0473,
+        "2016": 0.047,
+        "2017": 0.0516,
+        "2018": -0.0045,
+        "2019": 0.0405,
+        "2020": -0.0155,
+        "2021": 0.1758,
+        "2022": 0.0914,
+        "2023": -0.0495
+      }
+    },
+    "pre_season_gap1_vs_insurer_rate": {
+      "a": "lgbm_pre_season_gap1",
+      "b": "insurer_rate",
+      "metric": "auc",
+      "mean_delta": -0.013866199181883502,
+      "ci95": [
+        -0.07192664069534882,
+        0.04419424233158182
+      ],
+      "safras_a_better": 5,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.1025,
+        "2014": 0.0688,
+        "2015": -0.1081,
+        "2016": 0.0418,
+        "2017": -0.1421,
+        "2018": 0.102,
+        "2019": -0.0244,
+        "2020": 0.0184,
+        "2021": -0.0985,
+        "2022": -0.0405,
+        "2023": -0.0725
+      }
+    },
+    "served_gap1_vs_insurer_rate": {
+      "a": "logreg_pre_season_gap1",
+      "b": "insurer_rate",
+      "metric": "auc",
+      "mean_delta": 0.009110058465436948,
+      "ci95": [
+        -0.024130293863156627,
+        0.04235041079403053
+      ],
+      "safras_a_better": 7,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.054,
+        "2014": 0.0027,
+        "2015": -0.0694,
+        "2016": -0.0094,
+        "2017": -0.0637,
+        "2018": 0.0868,
+        "2019": -0.0277,
+        "2020": 0.0268,
+        "2021": 0.0546,
+        "2022": 0.0378,
+        "2023": 0.0077
+      }
+    },
+    "in_season_vs_served_pre_season": {
+      "a": "lgbm_in_season",
+      "b": "logreg_pre_season",
+      "metric": "auc",
+      "mean_delta": 0.049336124487209185,
+      "ci95": [
+        0.020735616336657464,
+        0.0779366326377609
+      ],
+      "safras_a_better": 9,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.0608,
+        "2014": 0.1104,
+        "2015": -0.0036,
+        "2016": 0.0548,
+        "2017": 0.0124,
+        "2018": -0.0096,
+        "2019": 0.0373,
+        "2020": 0.0138,
+        "2021": 0.0997,
+        "2022": 0.0704,
+        "2023": 0.0963
+      }
+    },
+    "in_season_gap1_vs_insurer_rate": {
+      "a": "lgbm_in_season_gap1",
+      "b": "insurer_rate",
+      "metric": "auc",
+      "mean_delta": 0.04444676270350245,
+      "ci95": [
+        -0.017608242727646856,
+        0.10650176813465176
+      ],
+      "safras_a_better": 9,
+      "n": 11,
+      "by_safra": {
+        "2013": 0.1298,
+        "2014": 0.1166,
+        "2015": -0.0443,
+        "2016": 0.0498,
+        "2017": -0.171,
+        "2018": 0.1219,
+        "2019": 0.0165,
+        "2020": 0.0276,
+        "2021": 0.1482,
+        "2022": 0.0283,
+        "2023": 0.0654
       }
     },
     "contract_vs_insurer_rate": {
@@ -654,6 +863,108 @@
         "lift": 1.2848
       }
     ],
+    "logreg_pre_season": [
+      {
+        "decile": 1,
+        "policies": 115796,
+        "claim_rate": 0.059,
+        "mean_score": 0.0315,
+        "loss_ratio": 0.3984,
+        "share_of_claims": 0.0324,
+        "share_of_indemnity": 0.0275,
+        "lift": 0.3236
+      },
+      {
+        "decile": 2,
+        "policies": 115789,
+        "claim_rate": 0.1004,
+        "mean_score": 0.0556,
+        "loss_ratio": 0.4864,
+        "share_of_claims": 0.0551,
+        "share_of_indemnity": 0.05,
+        "lift": 0.5509
+      },
+      {
+        "decile": 3,
+        "policies": 115790,
+        "claim_rate": 0.1242,
+        "mean_score": 0.076,
+        "loss_ratio": 0.5661,
+        "share_of_claims": 0.0682,
+        "share_of_indemnity": 0.0638,
+        "lift": 0.6818
+      },
+      {
+        "decile": 4,
+        "policies": 115790,
+        "claim_rate": 0.1474,
+        "mean_score": 0.0976,
+        "loss_ratio": 0.7254,
+        "share_of_claims": 0.0809,
+        "share_of_indemnity": 0.0878,
+        "lift": 0.8088
+      },
+      {
+        "decile": 5,
+        "policies": 115791,
+        "claim_rate": 0.1587,
+        "mean_score": 0.1231,
+        "loss_ratio": 0.7426,
+        "share_of_claims": 0.0871,
+        "share_of_indemnity": 0.0913,
+        "lift": 0.8712
+      },
+      {
+        "decile": 6,
+        "policies": 115789,
+        "claim_rate": 0.1885,
+        "mean_score": 0.1516,
+        "loss_ratio": 0.8779,
+        "share_of_claims": 0.1035,
+        "share_of_indemnity": 0.1065,
+        "lift": 1.0348
+      },
+      {
+        "decile": 7,
+        "policies": 115789,
+        "claim_rate": 0.2112,
+        "mean_score": 0.1824,
+        "loss_ratio": 0.9731,
+        "share_of_claims": 0.1159,
+        "share_of_indemnity": 0.1174,
+        "lift": 1.1594
+      },
+      {
+        "decile": 8,
+        "policies": 115791,
+        "claim_rate": 0.2524,
+        "mean_score": 0.2201,
+        "loss_ratio": 1.1168,
+        "share_of_claims": 0.1385,
+        "share_of_indemnity": 0.1354,
+        "lift": 1.3853
+      },
+      {
+        "decile": 9,
+        "policies": 115788,
+        "claim_rate": 0.2892,
+        "mean_score": 0.2719,
+        "loss_ratio": 1.2442,
+        "share_of_claims": 0.1587,
+        "share_of_indemnity": 0.1536,
+        "lift": 1.5873
+      },
+      {
+        "decile": 10,
+        "policies": 115795,
+        "claim_rate": 0.291,
+        "mean_score": 0.3789,
+        "loss_ratio": 1.035,
+        "share_of_claims": 0.1597,
+        "share_of_indemnity": 0.1666,
+        "lift": 1.5969
+      }
+    ],
     "lgbm_pre_season": [
       {
         "decile": 1,
@@ -859,86 +1170,87 @@
       }
     ]
   },
-  "double_lift_pre_season_vs_rate": [
+  "served_model": "logreg_pre_season",
+  "double_lift_served_vs_rate": [
     {
       "decile": 1,
-      "claim_rate": 0.1475,
-      "model_mean": 0.0435,
-      "rate_implied_mean": 0.1507,
-      "loss_ratio": 0.6966,
-      "mean_rate_charged": 0.0851
+      "claim_rate": 0.0922,
+      "model_mean": 0.0385,
+      "rate_implied_mean": 0.126,
+      "loss_ratio": 0.4917,
+      "mean_rate_charged": 0.065
     },
     {
       "decile": 2,
-      "claim_rate": 0.1626,
-      "model_mean": 0.055,
-      "rate_implied_mean": 0.1422,
-      "loss_ratio": 0.8591,
-      "mean_rate_charged": 0.0768
+      "claim_rate": 0.1218,
+      "model_mean": 0.0645,
+      "rate_implied_mean": 0.1343,
+      "loss_ratio": 0.5583,
+      "mean_rate_charged": 0.0715
     },
     {
       "decile": 3,
-      "claim_rate": 0.1673,
-      "model_mean": 0.0648,
-      "rate_implied_mean": 0.1393,
-      "loss_ratio": 0.9491,
-      "mean_rate_charged": 0.0752
+      "claim_rate": 0.1355,
+      "model_mean": 0.0847,
+      "rate_implied_mean": 0.14,
+      "loss_ratio": 0.5977,
+      "mean_rate_charged": 0.0765
     },
     {
       "decile": 4,
-      "claim_rate": 0.1617,
-      "model_mean": 0.0768,
-      "rate_implied_mean": 0.1428,
-      "loss_ratio": 0.9107,
-      "mean_rate_charged": 0.079
+      "claim_rate": 0.1398,
+      "model_mean": 0.1073,
+      "rate_implied_mean": 0.1474,
+      "loss_ratio": 0.6113,
+      "mean_rate_charged": 0.0832
     },
     {
       "decile": 5,
-      "claim_rate": 0.1554,
-      "model_mean": 0.0912,
-      "rate_implied_mean": 0.1464,
-      "loss_ratio": 0.8272,
-      "mean_rate_charged": 0.0824
+      "claim_rate": 0.1531,
+      "model_mean": 0.1324,
+      "rate_implied_mean": 0.1545,
+      "loss_ratio": 0.647,
+      "mean_rate_charged": 0.0899
     },
     {
       "decile": 6,
-      "claim_rate": 0.1632,
-      "model_mean": 0.1099,
-      "rate_implied_mean": 0.1519,
-      "loss_ratio": 0.7806,
-      "mean_rate_charged": 0.087
+      "claim_rate": 0.1743,
+      "model_mean": 0.1577,
+      "rate_implied_mean": 0.1579,
+      "loss_ratio": 0.7212,
+      "mean_rate_charged": 0.0927
     },
     {
       "decile": 7,
-      "claim_rate": 0.1839,
-      "model_mean": 0.1308,
-      "rate_implied_mean": 0.1539,
-      "loss_ratio": 0.8297,
-      "mean_rate_charged": 0.0892
+      "claim_rate": 0.203,
+      "model_mean": 0.1871,
+      "rate_implied_mean": 0.1601,
+      "loss_ratio": 0.8469,
+      "mean_rate_charged": 0.0947
     },
     {
       "decile": 8,
-      "claim_rate": 0.1949,
-      "model_mean": 0.1654,
-      "rate_implied_mean": 0.1585,
-      "loss_ratio": 0.7812,
-      "mean_rate_charged": 0.0945
+      "claim_rate": 0.241,
+      "model_mean": 0.2224,
+      "rate_implied_mean": 0.1607,
+      "loss_ratio": 1.0435,
+      "mean_rate_charged": 0.0953
     },
     {
       "decile": 9,
-      "claim_rate": 0.2426,
-      "model_mean": 0.215,
-      "rate_implied_mean": 0.1617,
-      "loss_ratio": 0.8937,
-      "mean_rate_charged": 0.0983
+      "claim_rate": 0.2777,
+      "model_mean": 0.2641,
+      "rate_implied_mean": 0.1564,
+      "loss_ratio": 1.3358,
+      "mean_rate_charged": 0.091
     },
     {
       "decile": 10,
-      "claim_rate": 0.2428,
-      "model_mean": 0.2494,
-      "rate_implied_mean": 0.1288,
-      "loss_ratio": 0.9978,
-      "mean_rate_charged": 0.0694
+      "claim_rate": 0.2838,
+      "model_mean": 0.3301,
+      "rate_implied_mean": 0.139,
+      "loss_ratio": 1.4538,
+      "mean_rate_charged": 0.0772
     }
   ],
   "auc_by_crop_group": {
@@ -954,6 +1266,32 @@
       "milho_2": 0.573,
       "safrinha_outros": 0.621,
       "soja": 0.578
+    },
+    "logreg_contract": {
+      "arroz": 0.599,
+      "cafe": 0.637,
+      "cana": 0.561,
+      "feijao_1": 0.614,
+      "fruta_temperada": 0.585,
+      "hortalicas": 0.625,
+      "inverno": 0.479,
+      "milho_1": 0.558,
+      "milho_2": 0.604,
+      "safrinha_outros": 0.681,
+      "soja": 0.592
+    },
+    "logreg_pre_season": {
+      "arroz": 0.543,
+      "cafe": 0.666,
+      "cana": 0.518,
+      "feijao_1": 0.555,
+      "fruta_temperada": 0.582,
+      "hortalicas": 0.593,
+      "inverno": 0.509,
+      "milho_1": 0.594,
+      "milho_2": 0.601,
+      "safrinha_outros": 0.684,
+      "soja": 0.61
     },
     "lgbm_contract": {
       "arroz": 0.668,
@@ -995,46 +1333,34 @@
       "soja": 0.698
     }
   },
-  "in_season_claims_by_event": [
+  "auc_by_cause": [
     {
-      "event": "SECA",
-      "claims": 121547,
-      "share_top2_deciles": 0.298
+      "index": "seca",
+      "claims": 121547.0,
+      "Logistic, pre-season (+ climatology)": 0.606,
+      "LightGBM, pre-season (+ climatology, ENSO)": 0.478,
+      "LightGBM, in-season (mid-window weather)": 0.679
     },
     {
-      "event": "GRANIZO",
-      "claims": 45169,
-      "share_top2_deciles": 0.568
+      "index": "granizo",
+      "claims": 45169.0,
+      "Logistic, pre-season (+ climatology)": 0.72,
+      "LightGBM, pre-season (+ climatology, ENSO)": 0.79,
+      "LightGBM, in-season (mid-window weather)": 0.787
     },
     {
-      "event": "GEADA",
-      "claims": 26130,
-      "share_top2_deciles": 0.5
+      "index": "geada",
+      "claims": 26130.0,
+      "Logistic, pre-season (+ climatology)": 0.768,
+      "LightGBM, pre-season (+ climatology, ENSO)": 0.787,
+      "LightGBM, in-season (mid-window weather)": 0.772
     },
     {
-      "event": "CHUVA EXCESSIVA",
-      "claims": 11223,
-      "share_top2_deciles": 0.174
-    },
-    {
-      "event": "VENTOS FORTES/FRIOS",
-      "claims": 2945,
-      "share_top2_deciles": 0.22
-    },
-    {
-      "event": "INUNDAÇÃO/TROMBA D´ÁGUA",
-      "claims": 2481,
-      "share_top2_deciles": 0.272
-    },
-    {
-      "event": "VARIAÇÃO EXCESSIVA DE TEMPERATURA",
-      "claims": 666,
-      "share_top2_deciles": 0.321
-    },
-    {
-      "event": "INCÊNDIO",
-      "claims": 311,
-      "share_top2_deciles": 0.08
+      "index": "chuva excessiva",
+      "claims": 11223.0,
+      "Logistic, pre-season (+ climatology)": 0.546,
+      "LightGBM, pre-season (+ climatology, ENSO)": 0.551,
+      "LightGBM, in-season (mid-window weather)": 0.56
     }
   ],
   "psi_score_by_safra": [

@@ -193,3 +193,30 @@ logs, restart unless-stopped. Retrain container: low priority (nice 19, idle IO)
 1.5 CPU, 6 GB, monthly on day 3 at 04:30 UTC. Nginx adds `/crop-risk/` with a
 5 requests/s per-IP limit. The model bundle only contains aggregated tables
 (municipality level, n >= 10) and the LightGBM trees, never policy rows.
+
+### D20. The served pre-season model is the logistic regression
+The plan was to serve LightGBM. The backtest changed that: among contract-time
+models the logistic regression had the best mean AUC (0.646 vs 0.633) and a much
+more stable ranking (sd 0.058 vs 0.111; worst safra 0.56 vs 0.39). The difference in
+mean AUC is within noise, so stability decided. LightGBM stays in the backtest, in
+the in-season model and in the SHAP analysis. The API explains the logistic model
+with exact linear contributions (coefficient x deviation from the training mean of
+each transformed column, summed back to the original feature; a unit test checks
+that they add up to the logit). Choosing among candidates on the same 11 folds makes
+the served model's reported AUC slightly optimistic; the holdout 2023/24 number
+(0.629) is reported next to it.
+
+### D21. Reading calibration and PSI in a weather-driven portfolio
+- The season's claim rate (7% to 32%) is set by weather the pre-season model cannot
+  see. Brier and calibration are reported, but the model is presented as a ranking
+  tool, and the README says it does not forecast a season's total claims.
+- Score PSI between training safras and the test safra is above 0.25 in most folds
+  for every model (one ENSO state per safra, a different crop mix, a subsidy budget
+  that varied 5x). PSI is logged every month and compared across runs instead of
+  being used with the usual 0.25 alarm.
+
+### D22. Hail, frost and excess rain vs drought
+Season weather from a 50 km grid helps drought claims (AUC 0.61 -> 0.68) but not
+hail or frost, which are already ranked well by crop and location (0.72-0.79), nor
+excess rain (0.55 for every model). Hail is a local event that a 0.5 degree grid
+does not see; frost risk is mostly where and what is planted.
