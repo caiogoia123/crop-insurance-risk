@@ -25,6 +25,7 @@ train = [
     "shap==0.51.0",
     "matplotlib==3.11.2",
     "xgboost==3.2.0",
+    "tabulate==0.10.0",
 ]
 
 [dependency-groups]

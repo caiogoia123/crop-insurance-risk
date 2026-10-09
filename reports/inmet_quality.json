@@ -1,0 +1,45 @@
+{
+  "years": [
+    2021,
+    2022
+  ],
+  "ufs": [
+    "PR",
+    "RS",
+    "SC"
+  ],
+  "stations": 95,
+  "rules": {
+    "valid_rain_day_min_hours": 22,
+    "valid_temp_day_min_hours": 20,
+    "stuck_zero": ">= 30 days of 0 mm while IDW of neighbours >= 60 mm",
+    "idw": "power 2, radius 150 km, >= 2 neighbours"
+  },
+  "missing_days_pct_median": 23.2,
+  "stations_over_10pct_missing": 64,
+  "station_days_missing": 23434,
+  "station_days_total": 69350,
+  "naive_fake_zero_days": 21779,
+  "suspect_zero_days": 39,
+  "stations_with_stuck_runs": 1,
+  "idw_leave_one_out": {
+    "days": 43065,
+    "mae_mm": 2.845665780376294,
+    "r_daily": 0.7679210386594615,
+    "bias_ratio": 1.0052455898631498,
+    "pod": 0.8936905790838375,
+    "far": 0.3178601415377234
+  },
+  "gaps_filled_by_idw": 19428,
+  "gaps_left_unfilled": 4045,
+  "power_vs_station_median": {
+    "r_daily_power": 0.7520390306412699,
+    "r_monthly_power": 0.9051650903441797,
+    "power_over_station": 0.9158126979104452,
+    "pod_power": 0.9230769230769231,
+    "far_power": 0.3473053892215569,
+    "tmax_bias_power": 0.2656361488090755,
+    "tmin_bias_power": -0.11512279420057209,
+    "r_tmin_power": 0.9502176161634046
+  }
+}
