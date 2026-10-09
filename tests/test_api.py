@@ -55,6 +55,19 @@ def test_predict_valid(client):
     assert 0 < out["rate_implied_probability"] < 1
 
 
+def test_missing_insurer_is_averaged_over_market_shares(client):
+    base = {k: v for k, v in VALID.items() if k not in ("insurer", "product_class")}
+    out = client.post("/predict", json=base).json()
+    named = [
+        client.post("/predict", json={**base, "insurer": i, "product_class": pc}).json()[
+            "probability"
+        ]
+        for i in ("SEGURADORA SINTETICA S.A.", "other")
+        for pc in ("PRODUTIVIDADE", "CUSTEIO")
+    ]
+    assert min(named) - 1e-4 <= out["probability"] <= max(named) + 1e-4
+
+
 def test_predict_unknown_insurer_and_vegetable(client):
     r = client.post(
         "/predict",

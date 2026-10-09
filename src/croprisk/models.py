@@ -25,13 +25,13 @@ CONTRACT_NUM = [
     "contract_month",
     "lead_days",
 ]
+# Cumulative policy counts are left out on purpose: they only grow over time and
+# would act as a hidden time index (see DECISIONS D11).
 HIST = [
     "hist_cg_rate",
     "hist_uf_cg_rate",
     "hist_muni_cg_rate",
     "hist_muni_rate",
-    "hist_muni_cg_n",
-    "hist_uf_cg_n",
 ]
 CLIM = [
     "clim_prec_mean",

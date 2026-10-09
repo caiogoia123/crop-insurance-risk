@@ -155,6 +155,8 @@ def write_bundle(
         "clim_features": models.CLIM,
         "categories": {c: [str(x) for x in train[c].cat.categories] for c in fs.cat},
         "crop_map": crop_map,
+        "insurer_shares": shares(train, "insurer"),
+        "product_class_shares": shares(train, "product_class", keep=("PRODUTIVIDADE", "CUSTEIO")),
         "crops": sorted(calendar.CROP_GROUP),
         "tuning": res["tuning"],
         "train_safras": [int(train["safra_year"].min()), int(train["safra_year"].max())],
@@ -181,6 +183,15 @@ def write_bundle(
     }
     (out / "meta.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
     return out
+
+
+def shares(train: pd.DataFrame, col: str, keep=None, top: int = 12) -> dict[str, float]:
+    """Market shares in the last training safra (used when a request omits `col`)."""
+    last = train[train["safra_year"] == train["safra_year"].max()][col].astype(str)
+    if keep:
+        last = last[last.isin(keep)]
+    vc = last.value_counts(normalize=True).head(top)
+    return {k: round(float(v / vc.sum()), 4) for k, v in vc.items()}
 
 
 def promote(bundle_dir: Path) -> None:

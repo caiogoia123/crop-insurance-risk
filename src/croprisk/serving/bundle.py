@@ -99,8 +99,11 @@ class Bundle:
         row["uf"] = uf
         row["region"] = win["region"]
         ins = req.get("insurer")
-        row["insurer"] = ins if ins in meta["categories"]["insurer"] else "other"
-        row["product_class"] = req.get("product_class") or "NA"
+        # not informed -> filled per scenario in `predict` (weighted by market share)
+        row["insurer"] = (
+            None if ins is None else (ins if ins in meta["categories"]["insurer"] else "other")
+        )
+        row["product_class"] = req.get("product_class")
 
         area = req["area_ha"]
         si = req["sum_insured"]
@@ -159,9 +162,6 @@ class Bundle:
             row[c] = float(clim[c])
 
         X = pd.DataFrame([row])[meta["features"]]
-        for c in meta["cat_features"]:
-            cats = meta["categories"][c]
-            X[c] = pd.Categorical(X[c].where(X[c].isin(cats)), categories=cats)
         context = {
             "crop_group": group,
             "uf": uf,
@@ -175,22 +175,45 @@ class Bundle:
         return X, context
 
     # ------------------------------------------------------------------ predict
+    def _scenarios(self, X: pd.DataFrame) -> tuple[pd.DataFrame, np.ndarray]:
+        """Unknown insurer / product type: one row per value, weighted by its share
+        in the last training safra, so the answer is the expected risk."""
+        rows, w = X, np.ones(1)
+        for col, shares in (
+            ("insurer", self.meta["insurer_shares"]),
+            ("product_class", self.meta["product_class_shares"]),
+        ):
+            if pd.isna(X[col].iloc[0]):
+                keys = list(shares)
+                rows = pd.concat([rows.assign(**{col: k}) for k in keys], ignore_index=True)
+                w = np.concatenate([w * shares[k] for k in keys])
+        for c in self.meta["cat_features"]:
+            cats = self.meta["categories"][c]
+            rows[c] = pd.Categorical(
+                rows[c].astype(object).where(rows[c].isin(cats)), categories=cats
+            )
+        return rows, w / w.sum()
+
     def predict(self, req: dict, top_k: int = 5) -> dict:
         X, ctx = self.features(req)
-        p = float(self.booster.predict(X)[0])
-        contrib = self.booster.predict(X, pred_contrib=True)[0]
+        rows, w = self._scenarios(X)
+        p = float(np.dot(w, self.booster.predict(rows)))
+        contrib = np.average(self.booster.predict(rows, pred_contrib=True), axis=0, weights=w)
         names = self.meta["features"]
         order = np.argsort(-np.abs(contrib[:-1]))[:top_k]
+
+        def value(i):
+            v = X.iloc[0, i]
+            if pd.isna(v):
+                return (
+                    "not informed (averaged)" if names[i] in ("insurer", "product_class") else None
+                )
+            return str(v) if names[i] in self.meta["cat_features"] else float(v)
+
         factors = [
             {
                 "feature": names[i],
-                "value": None
-                if pd.isna(X.iloc[0, i])
-                else (
-                    str(X.iloc[0, i])
-                    if names[i] in self.meta["cat_features"]
-                    else float(X.iloc[0, i])
-                ),
+                "value": value(i),
                 "contribution_logit": round(float(contrib[i]), 4),
             }
             for i in order

@@ -3,7 +3,7 @@
 Sum insured per hectare grew 8x in nominal R$ between 2006 and 2023 (soy: R$695 to
 R$5,476), and expected yields trend upward. Raw values drift out of the range the
 model was trained on, so contracts are described relative to the median of the
-same crop and UF in the previous REF_WINDOW safras. These medians use contract
+same crop and UF in the previous safra. These medians use contract
 fields only (no claims), so even censored safras can serve as a reference.
 """
 
@@ -12,7 +12,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-REF_WINDOW = 3
+REF_WINDOW = 1  # previous safra only: least inflation between reference and contract
 
 
 def reference_medians(df: pd.DataFrame) -> pd.DataFrame:
