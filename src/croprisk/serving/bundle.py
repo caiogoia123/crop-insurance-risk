@@ -223,6 +223,7 @@ class Bundle:
         out = {
             "probability": round(p, 4),
             "risk_decile": min(decile, 10),
+            "holdout_safra": self.meta["holdout"]["safra"],
             "holdout_claim_rate": self.meta["holdout"]["metrics"]["pos_rate"],
             **ctx,
             "top_factors": factors,

@@ -161,7 +161,7 @@ $("f").addEventListener("submit", async (ev) => {
       <div class="muted">Probability of indemnity</div>
       <div class="big num">${(100 * r.probability).toFixed(1)}%</div>
       <div class="bar">${bar}</div>
-      <div class="muted">Risk decile ${r.risk_decile} of 10 (vs. policies of the ${"holdout"} safra; their claim rate was ${(100 * r.holdout_claim_rate).toFixed(1)}%).</div>
+      <div class="muted">Risk decile ${r.risk_decile} of 10 (vs. policies of the ${r.holdout_safra} safra, the most recent with complete claims; their claim rate was ${(100 * r.holdout_claim_rate).toFixed(1)}%).</div>
       ${r.rate_implied_probability !== undefined ? `<p>Probability implied by the rate charged: <span class="num">${(100 * r.rate_implied_probability).toFixed(1)}%</span></p>` : ""}
       <p class="muted">${r.municipality} (${r.uf}) · crop group <b>${r.crop_group}</b> · safra ${r.safra} · critical window
         ${r.critical_window.start} to ${r.critical_window.end}</p>
