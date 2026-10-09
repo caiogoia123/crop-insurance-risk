@@ -9,7 +9,7 @@ import pandas as pd
 
 from croprisk import config, dataset
 from croprisk.data import enso, geo
-from croprisk.features import climate, history
+from croprisk.features import climate, history, reference
 
 log = logging.getLogger(__name__)
 
@@ -19,13 +19,15 @@ RARE_CROP = 500  # crops with fewer policies are merged into "<group>_outros"
 RARE_INSURER = 1000
 
 
-def contract_features(df: pd.DataFrame) -> pd.DataFrame:
+def contract_features(df: pd.DataFrame, ref: pd.DataFrame) -> pd.DataFrame:
+    """Contract fields known at signing. Money and yield are relative to the
+    recent market reference (see features.reference): nominal R$ drift 8x."""
     out = pd.DataFrame(index=df.index)
-    out["log_sum_insured"] = np.log1p(df["sum_insured"])
     out["log_area"] = np.log1p(df["area_ha"])
-    out["log_si_per_ha"] = np.log1p(df["sum_insured"] / df["area_ha"])
+    rel = reference.relative_features(df, ref)
+    out["si_per_ha_rel"] = rel["si_per_ha_rel"]
+    out["yield_rel"] = rel["yield_rel"]
     out["coverage_level"] = df["coverage_level"]
-    out["yield_expected"] = df["yield_expected"]
     out["yield_insured_ratio"] = (df["yield_insured"] / df["yield_expected"]).clip(0, 2)
     out["contract_month"] = df["t0"].dt.month
     # days between contract and the start of the critical window
@@ -80,7 +82,7 @@ def build() -> pd.DataFrame:
         [
             pol[keep],
             categorical_features(pol),
-            contract_features(pol),
+            contract_features(pol, pd.read_parquet(dataset.REFERENCE_PATH)),
             hist0,
             hist1,
             oni,

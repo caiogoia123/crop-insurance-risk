@@ -34,7 +34,7 @@ def _rate(n, k, prior):
 
 
 def history_features(df: pd.DataFrame, gap: int = 0) -> pd.DataFrame:
-    """df: ibge_code, uf, crop_group, crop, safra_year, y, yield_expected."""
+    """df: ibge_code, uf, crop_group, crop, safra_year, y."""
     base = df[["ibge_code", "uf", "crop_group", "crop", "safra_year"]].copy()
     out = pd.DataFrame(index=df.index)
 
@@ -82,15 +82,6 @@ def history_features(df: pd.DataFrame, gap: int = 0) -> pd.DataFrame:
     out["hist_uf_cg_n"] = np.log1p(b["n_uf"].to_numpy())
     out.index = df.index
 
-    # expected yield relative to the past median for the same crop and UF
-    med = []
-    for s in np.sort(df["safra_year"].unique()):
-        past = df[df["safra_year"] <= s - 1 - gap]
-        m = past.groupby(["uf", "crop"], observed=True)["yield_expected"].median().rename("yld_med")
-        med.append(m.reset_index().assign(safra_year=s))
-    med = pd.concat(med, ignore_index=True)
-    y = base.merge(med, on=["uf", "crop", "safra_year"], how="left")
-    out["yield_rel"] = df["yield_expected"].to_numpy() / y["yld_med"].to_numpy()
     return out
 
 
@@ -103,12 +94,12 @@ def lookup_tables(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     already fallen back to the UF rate.
     """
     nxt = int(df["safra_year"].max()) + 1
-    cols = ["ibge_code", "uf", "crop_group", "crop", "safra_year", "y", "yield_expected"]
+    cols = ["ibge_code", "uf", "crop_group", "crop", "safra_year", "y"]
     probe = (
         df.drop_duplicates(["ibge_code", "crop_group", "crop"])[
             ["ibge_code", "uf", "crop_group", "crop"]
         ]
-        .assign(safra_year=nxt, y=0, yield_expected=np.nan)
+        .assign(safra_year=nxt, y=0)
         .reset_index(drop=True)
     )
     both = pd.concat([df[cols], probe[cols]], ignore_index=True)
@@ -123,16 +114,9 @@ def lookup_tables(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
     ]
     hist_cg = pr.drop_duplicates("crop_group")[["crop_group", "hist_cg_rate"]]
     hist_muni_all = pr.drop_duplicates("ibge_code")[["ibge_code", "hist_muni_rate"]].dropna()
-    yld = (
-        df.groupby(["uf", "crop"], observed=True)["yield_expected"]
-        .median()
-        .rename("yld_med")
-        .reset_index()
-    )
     return {
         "hist_muni": hist_muni.reset_index(drop=True),
         "hist_uf": hist_uf.reset_index(drop=True),
         "hist_cg": hist_cg.reset_index(drop=True),
         "hist_muni_all": hist_muni_all.reset_index(drop=True),
-        "yield": yld,
     }

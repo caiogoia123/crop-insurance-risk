@@ -106,7 +106,8 @@ def build_tables(policies: pd.DataFrame) -> dict[str, pd.DataFrame]:
     clim = climate.climatology_table(sorted(munis["cell_id"].unique()), clim_keys())
     tabs = history.lookup_tables(policies)
     oni = enso.load()
-    return {"munis": munis, "clim": clim, **tabs, "oni": oni}
+    ref = pd.read_parquet(dataset.REFERENCE_PATH)
+    return {"munis": munis, "clim": clim, **tabs, "reference": ref, "oni": oni}
 
 
 def write_bundle(

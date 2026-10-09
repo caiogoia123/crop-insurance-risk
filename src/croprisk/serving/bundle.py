@@ -12,7 +12,7 @@ Layout of a bundle directory::
         hist_uf         history rates per (UF, crop group)
         hist_cg         history rate per crop group
         hist_muni_all   history rate per municipality (all crops), n >= 10 only
-        yield           median expected yield per (UF, crop)
+        reference       median expected yield and sum insured/ha per (UF, crop, safra)
         oni             ENSO index with publication dates
 """
 
@@ -28,8 +28,9 @@ import pandas as pd
 
 from croprisk import calendar
 from croprisk.data import enso
+from croprisk.features import reference
 
-TABLES = ["munis", "clim", "hist_muni", "hist_uf", "hist_cg", "hist_muni_all", "yield", "oni"]
+TABLES = ["munis", "clim", "hist_muni", "hist_uf", "hist_cg", "hist_muni_all", "reference", "oni"]
 
 
 def current_dir(models_dir: Path) -> Path:
@@ -65,7 +66,8 @@ class Bundle:
         self.hist_uf = t["hist_uf"].set_index(["uf", "crop_group"])
         self.hist_cg = t["hist_cg"].set_index("crop_group")
         self.hist_muni_all = t["hist_muni_all"].set_index("ibge_code")
-        self.yield_med = t["yield"].set_index(["uf", "crop"])["yld_med"]
+        self.reference = t["reference"]
+        self.max_ref_safra = int(self.reference["safra_year"].max())
         self.oni = t["oni"]
         self.relative_bins = sorted(
             {
@@ -104,14 +106,14 @@ class Bundle:
         si = req["sum_insured"]
         ye = req.get("yield_expected")
         yi = req.get("yield_insured")
-        row["log_sum_insured"] = np.log1p(si)
+        safra = min(int(win["safra_year"]), self.max_ref_safra + 1)
+        keys = pd.DataFrame({"uf": [uf], "crop": [crop], "safra_year": [safra]})
+        ref = reference.reference_for(self.reference, keys).iloc[0]
         row["log_area"] = np.log1p(area)
-        row["log_si_per_ha"] = np.log1p(si / area)
+        row["si_per_ha_rel"] = float(np.clip(si / area / ref["siha_ref"], 0, 10))
+        row["yield_rel"] = float(np.clip(ye / ref["yld_ref"], 0, 5)) if ye else np.nan
         row["coverage_level"] = req.get("coverage_level")
-        row["yield_expected"] = ye
         row["yield_insured_ratio"] = np.clip(yi / ye, 0, 2) if ye and yi else np.nan
-        med = self.yield_med.get((uf, crop), np.nan)
-        row["yield_rel"] = ye / med if ye and med == med else np.nan
         row["contract_month"] = t0.month
         row["lead_days"] = (ws - t0).days
 
