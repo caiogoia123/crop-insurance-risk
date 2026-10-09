@@ -47,7 +47,8 @@ def history_features(df: pd.DataFrame, gap: int = 0) -> pd.DataFrame:
     b = base.assign(_all=1).merge(
         allc.rename(columns={"n": "n_all", "k": "k_all"}), on=["_all", "safra_year"], how="left"
     )
-    b["p_all"] = (b["k_all"] / b["n_all"]).fillna(df["y"].mean() if len(df) else 0.15)
+    # no history at all (first safra): missing, never a mean that includes the future
+    b["p_all"] = b["k_all"] / b["n_all"]
     b = b.merge(
         cg.rename(columns={"n": "n_cg", "k": "k_cg"}), on=["crop_group", "safra_year"], how="left"
     )
@@ -94,21 +95,44 @@ def history_features(df: pd.DataFrame, gap: int = 0) -> pd.DataFrame:
 
 
 def lookup_tables(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
-    """History rates using every matured safra, for scoring new contracts (API)."""
+    """History tables for scoring new contracts (API), as of every matured safra.
+
+    Built by scoring a "probe" row for each known (municipality, crop) at the
+    next safra with `history_features`, so the API uses exactly the training math.
+    Only aggregates leave this function; municipality rates with n < MIN_N have
+    already fallen back to the UF rate.
+    """
     nxt = int(df["safra_year"].max()) + 1
-    tmp = df.copy()
-    probe = df.drop_duplicates(["ibge_code", "crop_group"])[
-        ["ibge_code", "uf", "crop_group", "crop"]
-    ].assign(safra_year=nxt, y=0, yield_expected=np.nan)
-    feats = history_features(pd.concat([tmp, probe], ignore_index=True), gap=0).iloc[len(tmp) :]
-    probe = probe.reset_index(drop=True)
-    feats = feats.reset_index(drop=True)
-    muni = pd.concat([probe[["ibge_code", "uf", "crop_group"]], feats], axis=1)
-    muni = muni.drop(columns=["yield_rel"])
+    cols = ["ibge_code", "uf", "crop_group", "crop", "safra_year", "y", "yield_expected"]
+    probe = (
+        df.drop_duplicates(["ibge_code", "crop_group", "crop"])[
+            ["ibge_code", "uf", "crop_group", "crop"]
+        ]
+        .assign(safra_year=nxt, y=0, yield_expected=np.nan)
+        .reset_index(drop=True)
+    )
+    both = pd.concat([df[cols], probe[cols]], ignore_index=True)
+    feats = history_features(both, gap=0).iloc[len(df) :].reset_index(drop=True)
+    pr = pd.concat([probe, feats], axis=1)
+    hist_muni = pr.drop_duplicates(["ibge_code", "crop_group"])[
+        ["ibge_code", "crop_group", "hist_muni_cg_rate", "hist_muni_cg_n"]
+    ]
+    hist_muni = hist_muni[hist_muni["hist_muni_cg_n"] > 0]
+    hist_uf = pr.drop_duplicates(["uf", "crop_group"])[
+        ["uf", "crop_group", "hist_uf_cg_rate", "hist_uf_cg_n"]
+    ]
+    hist_cg = pr.drop_duplicates("crop_group")[["crop_group", "hist_cg_rate"]]
+    hist_muni_all = pr.drop_duplicates("ibge_code")[["ibge_code", "hist_muni_rate"]].dropna()
     yld = (
         df.groupby(["uf", "crop"], observed=True)["yield_expected"]
         .median()
         .rename("yld_med")
         .reset_index()
     )
-    return {"muni": muni, "yield": yld}
+    return {
+        "hist_muni": hist_muni.reset_index(drop=True),
+        "hist_uf": hist_uf.reset_index(drop=True),
+        "hist_cg": hist_cg.reset_index(drop=True),
+        "hist_muni_all": hist_muni_all.reset_index(drop=True),
+        "yield": yld,
+    }
