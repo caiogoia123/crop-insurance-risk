@@ -11,6 +11,7 @@ import logging
 
 import numpy as np
 import pandas as pd
+from scipy.stats import t as student_t
 from sklearn.metrics import roc_auc_score
 
 from croprisk import calendar, config, metrics, plots, tracking
@@ -122,12 +123,13 @@ def paired_delta(folds: pd.DataFrame, a: str, b: str, metric: str = "auc") -> di
     fb = folds[folds["experiment"] == b].set_index("safra_year")[metric]
     d = (fa - fb).dropna()
     se = d.std(ddof=1) / np.sqrt(len(d))
+    tcrit = float(student_t.ppf(0.975, len(d) - 1))
     return {
         "a": a,
         "b": b,
         "metric": metric,
         "mean_delta": float(d.mean()),
-        "ci95": [float(d.mean() - 2.228 * se), float(d.mean() + 2.228 * se)],  # t(10) for 11 safras
+        "ci95": [float(d.mean() - tcrit * se), float(d.mean() + tcrit * se)],
         "safras_a_better": int((d > 0).sum()),
         "n": int(len(d)),
         "by_safra": {int(k): round(float(v), 4) for k, v in d.items()},
